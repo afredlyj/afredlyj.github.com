@@ -13,7 +13,7 @@ custom:
     category:
         default: 默认分类
         another: Another Category
-		program: 编程之旅
+program: 编程之旅
     categories:
       - name:  default
         title: 默认分类
@@ -21,7 +21,7 @@ custom:
       - name:  another
         title: Another Category
 		
-	  - name:  program
+- name:  program
         title: 编程之旅
 
 meta:
