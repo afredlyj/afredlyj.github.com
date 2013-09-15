@@ -11,11 +11,11 @@ desc: 长路漫漫 无心停留
 
 custom:
     category:
-        default: Default Category
+        default: 默认
         another: Another Category
     categories:
       - name:  default
-        title: Default Category
+        title: 默认
 
       - name:  another
         title: Another Category
