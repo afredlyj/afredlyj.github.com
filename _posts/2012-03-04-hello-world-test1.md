@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Test!
-category: default
+category: program
 ---
 
 
