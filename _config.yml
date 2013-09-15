@@ -11,15 +11,18 @@ desc: 长路漫漫 无心停留
 
 custom:
     category:
-        default: 默认
+        default: 默认分类
         another: Another Category
+		program: 编程之旅
     categories:
       - name:  default
-        title: 默认
+        title: 默认分类
 
       - name:  another
         title: Another Category
 		
+	  - name:  program
+        title: 编程之旅
 
 meta:
     author:
@@ -27,7 +30,7 @@ meta:
         email: csulyj@gmail.com
         disqus: your-disqus-short-name              # Disqus缩略标识
         gcse: 000346898720731947188:13h55x32l0y     # Google自定义搜索标识ID
-        github: your-github-account                 # GitHub账号
+        github: https://github.com/afredlyj                 # GitHub账号
         gravatar: 7dfb3c6fe5d0c1f5121d7d6d311fa8ff  # Gravatar头像标识
 
     disqus: disqus.com/embed.js                     # Disqus评论的JS地址
