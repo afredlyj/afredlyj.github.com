@@ -7,18 +7,22 @@ exclude:
 
 name: Afred's Blog
 host: http://afredlyj.github.io/
-desc: Some description of your site.
+desc: 长路漫漫 无心停留
 
 custom:
     category:
         default: Default Category
         another: Another Category
+		program：编程序
     categories:
       - name:  default
         title: Default Category
 
       - name:  another
         title: Another Category
+		
+	  - name:  program
+		title: 编代码
 
 meta:
     author:
