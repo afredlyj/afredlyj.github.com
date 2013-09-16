@@ -9,14 +9,14 @@ name: Afred's Blog
 host: http://afredlyj.github.io/
 desc: 长路漫漫 无心停留
 
-custom:
-    category:
+custom: 
+    category: 
         program: 编程之旅
         golang: golang
         shell: shell脚本
         funny: 折腾
-    categories:
-        - name:  program
+    categories: 
+        - name: program
         title: 编程之旅
         - name: golang
         title: golang
@@ -27,7 +27,7 @@ custom:
 
 
 meta:
-    author:
+    author: 
         name: Afred
         email: csulyj@gmail.com
         disqus: your-disqus-short-name              # Disqus缩略标识
