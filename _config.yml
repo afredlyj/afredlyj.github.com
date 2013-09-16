@@ -3,7 +3,7 @@ pygments: true
 safe: false
 permalink: /posts/:title.html
 exclude:
-  - README.md
+    - README.md
 
 name: Afred's Blog
 host: http://afredlyj.github.io/
@@ -11,20 +11,19 @@ desc: 长路漫漫 无心停留
 
 custom:
     category:
-        another: Another Category
         program: 编程之旅
         golang: golang
         shell: shell脚本
         funny: 折腾
     categories:
-      - name:  another
-        title: Another Category
-      - name:  program
+        - name:  program
         title: 编程之旅
-      - name: golang
-      title: golang
-          - name: shell
-          title: shell脚本
+        - name: golang
+        title: golang
+        - name: shell
+        title: shell脚本
+        - name: funny 
+        title: 折腾
 
 
 meta:
