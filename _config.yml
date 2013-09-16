@@ -1,32 +1,40 @@
---- 
-categories: 
-  - 
-    name: program
-custom: 
-  category: ~
-desc: "长路漫漫 无心停留"
-exclude: 
-  - README.md
-funny: 折腾
-golang: golang
-host: "http://afredlyj.github.io/"
 markdown: kramdown
-meta: 
-  author: 
-    disqus: your-disqus-short-name
-    email: csulyj@gmail.com
-    gcse: "018154889538965992626:ibsyratvihw"
-    github: "https://github.com/afredlyj"
-    gravatar: 7dfb3c6fe5d0c1f5121d7d6d311fa8ff
-    name: Afred
-  disqus: disqus.com/embed.js
-  gapi: "http://www.google.com/jsapi"
-  gravatar: "http://en.gravatar.com/avatar/"
-name: "Afred's Blog"
-permalink: "/posts/:title.html"
-program: 编程之旅
 pygments: true
 safe: false
-shell: shell脚本
-title: 折腾
+permalink: /posts/:title.html
+exclude:
+    - README.md
 
+name: Afred's Blog
+host: http://afredlyj.github.io/
+desc: 长路漫漫 无心停留
+
+custom: 
+    category: 
+        program: 编程之旅
+        golang: golang
+        shell: shell脚本
+        funny: 折腾
+    categories: 
+        - name: program
+        title: 编程之旅
+        - name: golang
+        title: golang
+        - name: shell
+        title: shell脚本
+        - name: funny 
+        title: 折腾
+
+
+meta:
+    author: 
+        name: Afred
+        email: csulyj@gmail.com
+        disqus: your-disqus-short-name              # Disqus缩略标识
+        gcse: 018154889538965992626:ibsyratvihw     # Google自定义搜索标识ID
+        github: https://github.com/afredlyj                 # GitHub账号
+        gravatar: 7dfb3c6fe5d0c1f5121d7d6d311fa8ff  # Gravatar头像标识
+
+    disqus: disqus.com/embed.js                     # Disqus评论的JS地址
+    gapi: http://www.google.com/jsapi               # Google API地址
+    gravatar: http://en.gravatar.com/avatar/        # Gravatar头像服务器地址
