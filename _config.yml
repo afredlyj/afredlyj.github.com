@@ -32,7 +32,7 @@
         email: csulyj@gmail.com
         disqus: your-disqus-short-name              # Disqus缩略标识
         gcse: 018154889538965992626:ibsyratvihw     # Google自定义搜索标识ID
-        github: https://github.com/afredlyj                 # GitHub账号
+        github: github.com/afredlyj                 # GitHub账号
         gravatar: 7dfb3c6fe5d0c1f5121d7d6d311fa8ff  # Gravatar头像标识
 
     disqus: disqus.com/embed.js                     # Disqus评论的JS地址
