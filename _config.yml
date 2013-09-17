@@ -17,13 +17,13 @@ custom:
         funny: 折腾
     categories: 
         - name: program
-        title: 编程之旅
+          title: 编程之旅
         - name: golang
-        title: golang
+          title: golang
         - name: shell
-        title: shell脚本
+          title: shell脚本
         - name: funny 
-        title: 折腾
+          title: 折腾
 
 
 meta:
