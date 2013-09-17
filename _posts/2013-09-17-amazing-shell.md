@@ -38,11 +38,11 @@ category: shell
 
 写服务器重启脚本的时候，需要先用PID kill掉原来的进程，那么怎么得出PID的呢，我是用  
 
-> ps aux\|grep -w SERVER_NAME  
+> ps aux \| grep -w SERVER_NAME  
 
 或者  
 
-> ps aux\|grep -w '\<SERVER_NAME\>'  
+> ps aux \| grep -w '\<SERVER_NAME\>'  
 
 达到精确匹配的目的，万一服务器上刚好有个名字类似的服务，直接kill掉了，别人会找我干仗的~~  
 
@@ -50,7 +50,7 @@ category: shell
 
 昨天帮别人删除服务器上某个用户的登陆缓存，一查数据库，居然有上百条数据，删除数据库数据倒是方便，但是删除redis缓存可就不能用一条sql能搞定了（起码当时是这么认为的），程序猿一定要学会偷懒，这种需求必然后前辈遇到过，故google之，果然。所以将数据库中的缓存key拷贝出来，存入文件，然后：  
 
-> cat tmp\|xargs /usr/local/bin/redis-cli DEL  
+> cat tmp \| xargs /usr/local/bin/redis-cli DEL  
 
 OK！
 
