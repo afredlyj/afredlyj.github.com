@@ -1,15 +1,15 @@
-markdown: kramdown
-pygments: true
-safe: false
-permalink: /posts/:title.html
-exclude:
+ markdown: kramdown
+ pygments: true
+ safe: false
+ permalink: /posts/:title.html
+ exclude:
     - README.md
 
-name: Afred's Blog
-host: http://afredlyj.github.io/
-desc: 长路漫漫 无心停留
+ name: Afred's Blog
+ host: http://afredlyj.github.io/
+ desc: 长路漫漫 无心停留
 
-custom: 
+ custom: 
     category: 
         program: 编程之旅
         golang: golang
@@ -26,7 +26,7 @@ custom:
           title: 折腾
 
 
-meta:
+ meta:
     author: 
         name: Afred
         email: csulyj@gmail.com
