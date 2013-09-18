@@ -4,9 +4,9 @@ title: 神奇的shell
 category: shell
 ---
 
-毕业一年多了，接触shell也只是平时看看服务器的日志，cp，top，tail等等一些基本命令，深度学习还是在毕业那会儿跟着ChinaUnix的几篇帖子[Shell基础而是篇](http://bbs.chinaunix.net/thread-452942-1-1.html) 和 [shell十三问？](http://bbs.chinaunix.net/thread-218853-1-1.html)，所以水平可想而知，所以就把一些基本的使用方法记下来。
+毕业一年多了，接触shell也只是平时看看服务器的日志，cp，top，tail等等一些基本命令，深度学习还是在毕业那会儿跟着ChinaUnix的几篇帖子[Shell基础二十篇](http://bbs.chinaunix.net/thread-452942-1-1.html) 和 [shell十三问？](http://bbs.chinaunix.net/thread-218853-1-1.html)，水平可想而知，所以就把一些基本的使用方法记下来。
 
-最近消息中心改用Golang实现，要做一些数据迁移和详细的日志跟踪，才渐渐明白*where there is a shell, there is a way*
+最近消息中心改用Golang实现，要做一些数据迁移和详细的日志跟踪，才渐渐明白*where there is a shell, there is a way*。
 
 **shell连接mysql**
 
