@@ -38,10 +38,14 @@ category: shell
 1. 用高并发的Golang
 
   Golang最近比较火，从语言级别上支持高并发，并且部门已经有了项目经验，代码量确实比java要少，比较适合消息中心这种轻量级的服务端应用。但是也存在为数不多的几个坑，我就被坑得很惨：  
-* 比如定义了一个全局变量globalVar，却在函数内部用  
-    globalVar := make(map[int32]string, 0)  
+* 比如定义了一个全局变量globalVar，却在函数内部用
+```  
+    globalVar := make(map[int32]string, 0)
+```  
 上面代码，其实是重新定义了局部变量globalVar，正确的做法是  
+```
     globalVar = make(map[int32]string, 0)  
+```
 * 指针和append，Golang是支持指针的，并且当数组作为函数参数时，是值传递。并且，要注意了，append可能会新建一个数组，所以需要把append的返回结果保存。  
     
 2. 缓存结构重新设计，用了进程内缓存  
