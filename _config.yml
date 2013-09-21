@@ -14,6 +14,7 @@
         program: 编程之旅
         golang: golang
         shell: shell脚本
+        reading: 读书杂记
         funny: 折腾
     categories: 
         - name: program
@@ -24,6 +25,8 @@
           title: shell脚本
         - name: funny 
           title: 折腾
+        - name: reading
+          title: 读书杂记
 
 
  meta:
