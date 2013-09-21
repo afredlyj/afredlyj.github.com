@@ -12,7 +12,7 @@
  custom: 
     category: 
         program: 编程之旅
-        golang: golang
+        golang: Golang
         shell: shell脚本
         reading: 读书杂记
         funny: 折腾
@@ -20,7 +20,7 @@
         - name: program
           title: 编程之旅
         - name: golang
-          title: golang
+          title: Golang
         - name: shell
           title: shell脚本
         - name: funny 
