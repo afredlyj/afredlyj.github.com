@@ -16,6 +16,7 @@
         shell: shell脚本
         reading: 读书杂记
         funny: 折腾
+        bug: 我见过很多bug
     categories: 
         - name: program
           title: 编程之旅
@@ -27,6 +28,8 @@
           title: 折腾
         - name: reading
           title: 读书杂记
+        - name: bug
+          title: 我见过很多bug
 
 
  meta:
