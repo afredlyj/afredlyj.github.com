@@ -9,23 +9,23 @@ category: shell
 **shell连接mysql**
 
 上一篇就提到了shell怎样连接mysql，但仅仅是一条命令，在shell调用mysql中还有其他几个选项需要使用的，这次一并记录下来：  
-* -h，--host  
+ * -h，--host  
 连接指定host上的mysql server  
-* -P，--port  
+ * -P，--port  
 TCP/IP端口号  
-* -B，--batch  
+ * -B，--batch  
 输出结果，以tab为字段分割符，每条记录以换行符分割  
-* -N，--skip-column-names  
+ * -N，--skip-column-names  
 输出结果不输出字段名称  
 
 **seq输出数字序列**
 
-seq命令用来输出一个等差队列，man相关内容：  
-* -f, --format=FORMAT  
+seq命令用来输出一个等差队列，man相关内容:  
+ * -f, --format=FORMAT  
 use printf style floating-point FORMAT  
-* -s, --separator=STRING  
+ * -s, --separator=STRING  
 use STRING to separate numbers (default: \n)  
-* -w, --equal-width  
+ * -w, --equal-width  
 equalize width by padding with leading zeroes        
 
 如果用shell批量创建1000个mysql表，表名的唯一区别是后缀：000-999：  
