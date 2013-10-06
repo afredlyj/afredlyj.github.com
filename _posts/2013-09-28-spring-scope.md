@@ -4,25 +4,25 @@ title: Spring scope引发的问题
 category: bug 
 ---
 
-Spring常用的bean scope有singleton和prototype，当然还有Web相关的scope，刚刚编码的时候看Spring初始化日志，发现尽管只有一次Http请求，但是有一个bean总是被注入两次，部分代码如下：
+Spring常用的bean scope有singleton和prototype，当然还有Web相关的scope，刚刚编码的时候看Spring初始化日志，发现尽管只有一次Http请求，但是有一个bean总是被注入两次，部分代码如下：  
 
 ```      
 // MerQueryInfoBusiness.java  
-public class MerQueryInfoBusiness {  
+  public class MerQueryInfoBusiness {  
     @Resource(name = "cacheManager")  
-	private CacheManager cacheManager;  
-}  
+	 private CacheManager cacheManager;  
+  }   
 
 // CacheManager.java  
-public class CacheManager {  
-	private AbstractCache cache;  
-}  
+  public class CacheManager {  
+	   private AbstractCache cache;  
+  }  
 
 // AbstractCache.java  
-public abstract class AbstractCache  
-  implements ICache  
-{  
-  private ICache next;  
+  public abstract class AbstractCache  
+    implements ICache  
+  {  
+    private ICache next;  
 
   public ICache getNext()  
   {  
@@ -55,7 +55,7 @@ AbstractCache的实现类有RedisCache和DBCache，其中RedisCache是第一级�
 从上面的代码可以看出，整个代码结构有点乱，注入bean既用了Spring bean又用到了J2EE Resource注解，Servlet中调用MerQueryInfoBusiness的方式是这样的：
 
 ```
-Object obj = SpringUtil.getBean("merQueryInfoService");
+    Object obj = SpringUtil.getBean("merQueryInfoService");
 ```
 
 问题就可以找到了，SpringUitl.getBean时，用Spring bean注入一个CacheManager(因为CacheManager的scope为prototype，多例)，而@Resource注解又会注入一个Cachemanager，最后就看到了Spring初始化日志中CacheManager的两次初始化。
