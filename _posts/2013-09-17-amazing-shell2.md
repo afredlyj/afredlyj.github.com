@@ -46,29 +46,83 @@ awk [-F fild-separator] 'command' input-file(s)
 >任何awk语句都是由模式和动作组成。模式部分决定动作语句何时触发及触发事件。处理即对数据进行的操作。如果省略模式部分，动作将时刻保持执行状态。模式可以是任何条件语句或复合语句或正则表达式。模式包括两个特殊字段B E G I N和E N D。使用B E G I N语句设置计数和打印头。B E G I N语句使用在任何文本浏览动作之前，之后文本浏览动作依据输入文件开始执行。E N D语句用来在a w k完成文本浏览动作后打印输出文本总数和结尾状态标志。如果不特别指明模式， a w k总是匹配或打印行数。
 实际动作在大括号{ }内指明。{}中的多个语句用分号隔开，动作大多数用来打印，但是还有些更长的代码诸如i f和循环（l o o p i n g）语句及循环退出结构。如果不指明采取动作， a w k将打印出所有浏览出来的记录。
 
-* awk过滤日志  
+* awk匹配
 awk支持条件表达式：<, >, ==, !=，测试demo：  
 ```
 afred@afred:~/script/data$ cat awk.test  
-1 2 hello  
-2 4 world  
+1 2 hello   
+2 4 world    
 ```
 
 选出第一域大于1的行，也就是第二行：  
 ```
-afred@afred:~/script/data$ awk '$1>1{print}' awk.test
-2 4 world
+afred@afred:~/script/data$ awk '$1>1{print}' awk.test  
+2 4 world  
 ```
 
 也可以：  
 ```
-afred@afred:~/script/data$ awk '{if($1>1)print}' awk.test
-2 4 world
+afred@afred:~/script/data$ awk '{if($1>1)print}' awk.test  
+2 4 world  
 ```
 
 awk的if-else还有for、while、do-while等流程控制其实跟c差不多，也支持break，continue和exit。  
 awk可以用正则表达式过滤不需要的日志记录，awk用“～”表示匹配正则表达式，“！～”表示不匹配正则表达式。  
 ```
-afred@afred:~/script/data$ awk '$3~/hello/{print}' awk.test
-1 2 hello
+afred@afred:~/script/data$ awk '$3~/hello/{print}' awk.test  
+1 2 hello  
 ```
+
+* awk获取shell参数  
+awk除了简单的过滤日志外，还可以分析日志，也可以和其他shell命令一起用来数据迁移。  
+awk可以接受shell传递的参数，通过`-v`可以达到目的：  
+```
+#!/bin/sh
+from="table1"
+awk -F'\t' -v from=${table1} '{print from}'
+```
+
+* awk调用系统命令  
+在awk的{}中使用`system`调用系统命令：  
+```
+#!/bin/sh
+awk '{
+    sql="mysql  -uroot -p123456 -Ddb -BN -e \"select * from table1\""
+    system(sql)
+}'
+```
+
+* awk中打印单引号和双引号  
+  awk做数据迁移时，会需要在`insert`语句的字段值上添加单引号：  
+```
+awk '{print "'\''"}'
+```
+
+双引号：  
+```
+awk  '{print "\""}'
+```
+
+在awk中拼接sql语句其实就是类似拼接字符串，比如：  
+```
+val="mysql  -uroot -p123456 -Ddb -BN -e \"insert into "t" (imei,pkg_name,model,app_id,update_time) values('\''"imei"'\'','\''"pkg"'\'','\''"model"'\'','\''"appid"'\'','\''"time"'\'')\""
+```
+
+可以将上面的sql类似java的+操作拼接如下：    
+```
+String str1 = "mysql  -uroot -p123456 -Ddb -BN -e \"insert into ";  
+String str2 = t;    // t为变量名  
+String str3 = " (imei,pkg_name,model,app_id,update_time) values('\''";  
+String str4 = imei;   
+String str5 = "'\'','\''";   
+String str6 = pkg;   
+String str7 = "'\'','\''";   
+String str8 = model;   
+String str9 = "'\'','\''";   
+String str10 = appid;   
+String str11 = "'\'','\''";   
+String str12 = time;   
+String str13 = "'\'')\"";   
+```
+
+终于写完了，居然是12个字符串组合成的。
