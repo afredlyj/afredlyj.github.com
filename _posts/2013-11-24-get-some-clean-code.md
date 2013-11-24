@@ -8,6 +8,7 @@ category: reading
 
 在服务器编程时，会存在多个请求需要同一个资源的情况，但是获取这个资源消耗比较大（比如需要http请求partner的信息），这时可以在本地缓存结果。下面的例子，用`ConcurrentHashMap`缓存计算结果，想比如普通的HashMap+Synchronized的组合，效率要提高很多。另外，如果仅仅是普通的获取之后再存到Map中，可能会出现这种情况：Thread1判断缓存中没有值，则进入计算，此时Thread2请求到达，由于Thread1还没有完成计算，Thread2也会获取失败，进入计算，导致相同计算进行了两次，还有可能其他更严重的问题。  
 如果缓存Future，Thread1获取失败，设置Future，并放入Map中，再run（注意这里的步骤，一定是先put，再run，否则还是会出现上面的问题），Thread2请求到达，判断时候存在Future（由于Thread1已经将Future存入Map，所以是存在的），然后通过get获取计算的值。
+
 ~~~~
 /**  
  * @Title: Memoizer3.java
