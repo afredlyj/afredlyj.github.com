@@ -7,7 +7,9 @@ category: bug
 @[mysql|database]
 
 最近刮刮卡mysql线上每隔几天就会报出相同的异常，并且根据log来看，都是凌晨2:33左右，让人很费解，具体的错误日志如下：  
+
 ~~~~  
+
 The last packet successfully received from the server was 138,859 milliseconds ago.  The last packet sent successfully to the server was 1 milliseconds ago.
 ### The error may exist in com/rom/scratchcard/conf/mybatis/prize.xml
 ### The error may involve com.rom.querprize-Inline
@@ -107,6 +109,7 @@ Caused by: java.net.SocketException: Socket closed
         at com.mysql.jdbc.MysqlIO.readFully(MysqlIO.java:2499) ~[mysql-connector-java-5.1.13-bin.jar:na]
         at com.mysql.jdbc.MysqlIO.reuseAndReadPacket(MysqlIO.java:2952) ~[mysql-connector-java-5.1.13-bin.jar:na]
         ... 61 common frames omitted
+
 ~~~~  
 
 看了半天，没看出问题，google后发现有可能是mysql的一个连接配置的问题：  
