@@ -150,7 +150,7 @@ end while;
 ~~~~
 
 OK，复现成功，确实是由于存储过程耗时太长，导致house keeper将链接回收，但是存储过程本身都是一些很简单的insert, update操作，存储引擎用的MyISAM，应该不会导致死锁，最后的可能就只能是这个时间段机器I/O负载太高，导致mysql性能受到影响，找运维同事确认，确实这个时间段再跑mysql备份，好吧。  
-解决办法：
-> 设置连接池链接最长活跃时间:maximum-active-time
+解决办法：  
+ > 设置连接池链接最长活跃时间:maximum-active-time
 
 搞定，继续观察~~
