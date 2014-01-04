@@ -7,6 +7,7 @@ category: program
 @[ibatis|db]
 
 ####ibatis调用存储过程返回结果集，sqlmap中有两种配置方式：  
+
  - 在`parameterMap`中设置一个ResultSet，并配置设置resultMap，这时，dao层请求参数map泛型为Map<String, Object>：  
 
 ~~~~
@@ -61,6 +62,7 @@ category: program
 ~~~~
 
 **注意：**游标的jdbcType为`ORACLECURSOR`，但是我看之前的有些`CURSOR`也没有报错；另外，结果集的`resultMap`直接在`parameterMap`的属性中指定，而节点`procedure`却没有配置`resultMap`。  
+
  - 返回结果集的另一种写法：  
 
 ~~~~
