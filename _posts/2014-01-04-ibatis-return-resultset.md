@@ -4,7 +4,7 @@ title: ibatis存储过程返回结果集
 category: program
 ---
 
-@[ibatis|db]
+@[ibatis|database]
 
 ####ibatis调用存储过程返回结果集，sqlmap中有两种配置方式：  
 
