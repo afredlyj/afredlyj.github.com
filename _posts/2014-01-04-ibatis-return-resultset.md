@@ -114,11 +114,13 @@ category: program
 这里在节点`procedure`中配置了`parameterMap`和`resultMap`，另外，`resultMap`的class不能是接口，比如`java.util.Map`，而应该是`java.util.HashMap`，其实，这里配置procedure的结果时，可以不用resultMap，而是直接`resultClass="java.util.HashMap"`，当然也可以是其他的java bean。返回到dao层，这里的类型就是map。
 
 ####游标组装结果集
-存储过程返回结果集时，有时候结果集的数据并不只是来自一张表，有可能需要将存储过程中的变量也顺带返回，这时候的处理，在mysql和oracle中相差不大，都是直接写在`select`中即可。
+存储过程返回结果集时，有时候结果集的数据并不只是来自一张表，有可能需要将存储过程中的变量也顺带返回，这时候的处理，在mysql和oracle中相差不大，都是直接写在`select`中即可。  
+
  - mysql组装：
 
 ~~~~
-select  prizename as giftName,imgurl  as giftImgUrl,prizedesc as giftdesc,prizetype as prizeType,id, amount  from  prizeinfo where   grade=p_grade  and osversion=p_osversion  and current_timestamp() between starttime and endtime and awardstatus='ok';
+select  prizename as giftName,imgurl  as giftImgUrl,prizedesc as giftdesc,prizetype as prizeType,id, amount  from  prizeinfo where   grade=p_grade  and 
+osversion=p_osversion  and current_timestamp() between starttime and endtime and awardstatus='ok';
 ~~~~
 
 其中`awardstatus`是存储过程定义的变量。
