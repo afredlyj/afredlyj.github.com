@@ -11,7 +11,9 @@ category: funny
 ~~~~  
 
 # normalize HOME to unix path  
+
 HOME="$(cd "$HOME" ; pwd)"  
+
 export PATH="$HOME/bin:$PATH"  
 
 ~~~~  
@@ -21,9 +23,13 @@ export PATH="$HOME/bin:$PATH"
 ~~~~  
 
 # normalize HOME to unix path  
+
 HOME="E:/workspace/gitrepo"  
+
 HOME="$(cd "$HOME" ; pwd)"  
+
 cd
+
 export PATH="$HOME/bin:$PATH"
 
 ~~~~  
@@ -33,6 +39,7 @@ export PATH="$HOME/bin:$PATH"
 ~~~~  
 
 $ pwd  
+
 /e/workspace/gitrepo  
 
 ~~~~  
