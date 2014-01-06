@@ -11,11 +11,8 @@ category: funny
 ~~~~  
 
 # normalize HOME to unix path  
-
 HOME="$(cd "$HOME" ; pwd)"  
-
 export PATH="$HOME/bin:$PATH"  
-
 ~~~~  
 
  - 添加两行代码，最后代码如下：  
