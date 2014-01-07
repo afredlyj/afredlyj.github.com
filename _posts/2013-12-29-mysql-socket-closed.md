@@ -20,12 +20,16 @@ The last packet successfully received from the server was 138,859 milliseconds a
 The last packet successfully received from the server was 138,859 milliseconds ago.  The last packet sent successfully to the server was 1 milliseconds ago.
 ; SQL []; Communications link failure
 
-The last packet successfully received from the server was 138,859 milliseconds ago.  The last packet sent successfully to the server was 1 milliseconds ago.; nested exception is com.mysql.jdbc.exceptions.jdbc4.CommunicationsException: Communications link failure
+The last packet successfully received from the server was 138,859 milliseconds ago.  The last packet sent successfully to the server was 1 milliseconds ago.; 
+nested exception is com.mysql.jdbc.exceptions.jdbc4.CommunicationsException: Communications link failure
 
 The last packet successfully received from the server was 138,859 milliseconds ago.  The last packet sent successfully to the server was 1 milliseconds ago.
-        at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:98) ~[org.springframework.jdbc-3.0.5.RELEASE.jar:3.0.5.RELEASE]
-        at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:72) ~[org.springframework.jdbc-3.0.5.RELEASE.jar:3.0.5.RELEASE]
-        at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:80) ~[org.springframework.jdbc-3.0.5.RELEASE.jar:3.0.5.RELEASE]
+        at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:98) ~
+        [org.springframework.jdbc-3.0.5.RELEASE.jar:3.0.5.RELEASE]
+        at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:72) ~
+        [org.springframework.jdbc-3.0.5.RELEASE.jar:3.0.5.RELEASE]
+        at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:80) ~
+        [org.springframework.jdbc-3.0.5.RELEASE.jar:3.0.5.RELEASE]
         at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:71) ~[mybatis-spring-1.1.1.jar:1.1.1]
         at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:365) ~[mybatis-spring-1.1.1.jar:1.1.1]
         at com.sun.proxy.$Proxy34.selectOne(Unknown Source) ~[na:na]
@@ -121,7 +125,9 @@ autoReconnect=true
 更新到正式环境后并没有解决问题，没别的办法，只能再看一次日志，避免有遗漏的点，幸亏项目刚上不久，还有debug日志，在报异常的这个点，发现了一个WARN：  
 
 ~~~~
-[WARN ] 2013-12-29 02:33:39 [HouseKeeper][org.logicalcobwebs.proxool.account_read:149] - #0154 was active for 130395 milliseconds and has been removed automaticaly. The Thread responsible was named 'server://127.0.0.1:6809-489',
+[WARN ] 2013-12-29 02:33:39 [HouseKeeper][org.logicalcobwebs.proxool.account_read:149] - 
+#0154 was active for 130395 milliseconds and has been removed automaticaly. 
+The Thread responsible was named 'server://127.0.0.1:6809-489',
 and the last SQL it performed is '{call
                 querprize('860813021676809','V1.00_1311210.W16110_131223','460026995709861','X909T','X909TROM_12_131227_Beta','2','19978463','0',9)
                 }; '.
