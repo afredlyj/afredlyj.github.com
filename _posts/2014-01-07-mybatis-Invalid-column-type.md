@@ -8,10 +8,14 @@ category: bug
 
 ~~~~
 org.apache.ibatis.exceptions.PersistenceException: 
-### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null parameter.  Most JDBC drivers require that the JdbcType must be specified for all nullable parameters. Cause: java.sql.SQLException: Invalid column type
+### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null parameter.  
+Most JDBC drivers require that the JdbcType must be specified for all nullable parameters. 
+Cause: java.sql.SQLException: Invalid column type
 ### The error may involve User.addDeleteRecord-Inline
 ### The error occurred while setting parameters
-### Cause: org.apache.ibatis.type.TypeException: Error setting null parameter.  Most JDBC drivers require that the JdbcType must be specified for all nullable parameters. Cause: java.sql.SQLException: Invalid column type
+### Cause: org.apache.ibatis.type.TypeException: Error setting null parameter.  
+Most JDBC drivers require that the JdbcType must be specified for all nullable parameters. 
+Cause: java.sql.SQLException: Invalid column type
         at org.apache.ibatis.exceptions.ExceptionFactory.wrapException(ExceptionFactory.java:8) ~[mybatis-3.0.4.jar:3.0.4]
         at org.apache.ibatis.session.defaults.DefaultSqlSession.update(DefaultSqlSession.java:120) ~[mybatis-3.0.4.jar:3.0.4]
         at org.apache.ibatis.session.defaults.DefaultSqlSession.insert(DefaultSqlSession.java:107) ~[mybatis-3.0.4.jar:3.0.4]
