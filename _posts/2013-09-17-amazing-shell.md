@@ -54,21 +54,21 @@ category: shell
 
 **删除万恶的^M**
 
-如果将windows下编辑的文件上传到linux下，有可能在linux下看到很多^M转义符号，这些符号在windows下是看不到的，如果在linux下用vim打开，有看到文件中含有这个转义符号，那么在shell处理这个文件时就有可能出问题。我知道的，有两种解决办法：  
+如果将windows下编辑的文件上传到linux下，有可能在linux下看到很多^M转义符号，这些符号在windows下是看不到的，如果在linux下用vim打开，有看到文件中含有这个转义符号，那么在shell处理这个文件时就有可能出问题。我知道的，有两种解决办法：    
 
  * 用vim打开文件，直接将^M替换掉  
 
-> :%s/^M//g
+> :%s/^M//g  
 
  注意，这里的^M并不是直接输入'^'和'M'两个字符，而是`ctrl+v`和`ctrl+m`，这样就可以解决大部分情况下的^M，起码到昨天为止我都是这么做的，so，如果还是不行，那就试试下面的办法。  
 
  * 用col命令  
 
-> cat file|col -b>file.col
+> cat file\|col -b>file.col  
 
  如果不放心，处理完成之后可以通过cat验证处理结果：    
 
-> cat -e file.col  
+> cat -e file.col    
 
  正常情况下，每行都是以$结尾，并且不含有^M字符。  
 
