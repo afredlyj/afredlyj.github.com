@@ -52,7 +52,6 @@ category: shell
 
 > cat tmp \| xargs /usr/local/bin/redis-cli DEL  
 
-
 **删除万恶的^M**
 
 如果将windows下编辑的文件上传到linux下，有可能在linux下看到很多^M转义符号，这些符号在windows下是看不到的，如果在linux下用vim打开，有看到文件中含有这个转义符号，那么在shell处理这个文件时就有可能出问题。我知道的，有两种解决办法：  
