@@ -156,3 +156,24 @@ String str13 = "'\'')\"";
 ~~~~
 
 终于写完了，居然是12个字符串组合成的。
+
+**快速编辑shell的一些命令**
+
+ * shell命令行快速跳转
+
+>[Ctrl + a] 跳转至命令行首 Ahead of line
+[Ctrl + e] 跳转至命令行尾 End of line
+[Ctrl + f] 向前跳转一个字符 jump Forward one character
+[Ctrl + b] 向后跳转一个字符 jump Backward one character
+[Alt + f] 向前跳转到下一个字的第一个字符
+[Alt + b] 向后跳转到下一个字的第一个字符
+
+
+ * 编辑命令的快捷键
+
+>[Ctrl + w] 向后删除一个字，用来对付刚刚输入的错误字很有用
+[Ctrl + u] 从光标当前位置删除所有字符至行首
+[Ctrl + k] 从光标当前位置删除所有字符至行尾
+[Ctrl + d] 删除光标当前位置的字符
+[Ctrl + y] 粘贴最后一个被删除的字
+[Alt + d] 删除从光标当前位置，到当前字的结尾字符
