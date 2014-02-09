@@ -49,7 +49,7 @@ CSV Data Set Config配置时有几个比较难理解的选项
 
  ~~~~  
  ${key}  
- ${value}
+ ${value}  
  ~~~~  
 
  * Delimiter，定义在CSV文件中，各个字段的分隔符
