@@ -39,11 +39,15 @@ $ pwd
  *　Clone现有仓库到本地  
 
  ~~~~
+
 git clone https://github.com/alibaba/dubbo.git
+
  ~~~~
 
  该命令将在本地的当前目录创建一个dubbo文件夹，并把该仓库的所有文件都clone到该文件夹下，如果想要将该文件夹重命名，则可以用以下命令：
 
  ~~~~
+
 git clone https://github.com/alibaba/dubbo.git mydubbo
+
  ~~~~
