@@ -47,9 +47,9 @@ CSV Data Set Config配置时有几个比较难理解的选项
 
  这里key的值为0，value的值为fas，这就是JMeter参数化的方法之一，在需要用到的地方，比如HTTP请求设置请求数据时，就可以这样引用cache.txt的值  
 
- ~~~~  
+~~~~  
  ${key}  
  ${value}  
- ~~~~  
+~~~~  
 
  * Delimiter，定义在CSV文件中，各个字段的分隔符

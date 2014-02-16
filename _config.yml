@@ -13,6 +13,7 @@
     category: 
         program: 编程之旅
         golang: Golang
+        mysql: mysql
         shell: shell脚本
         reading: 读书杂记
         funny: 折腾
@@ -22,6 +23,8 @@
           title: 编程之旅
         - name: golang
           title: Golang
+        - name: mysql
+          title: mysql
         - name: shell
           title: shell脚本
         - name: funny 
