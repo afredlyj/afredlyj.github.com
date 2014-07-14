@@ -25,8 +25,8 @@ ps : 这是修改之后的代码，修改前 sessions为普通的Map，即HashMa
 logger.debug("session: " + sessions);  
 ~~~~  
 
- * HashMap源码分析
-sessions的toString方法被调用，HashMap继承了AbstractMap，toString方法是AbstractMap实现的：  
+ * HashMap源码分析  
+从异常栈信息来看，sessions的toString方法被调用，从此入手，HashMap继承了AbstractMap，toString方法是AbstractMap实现的：  
 
 ~~~~  
     public String toString() {
