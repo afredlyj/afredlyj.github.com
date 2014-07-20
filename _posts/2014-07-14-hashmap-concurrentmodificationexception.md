@@ -231,7 +231,7 @@ key1
 
 ### 扩展
 
- * 整个过程分析下来，对HashMap的结构有了更深的了解，从往上找来一张HashMap的结构图，加深印象：  
+ * 整个过程分析下来，对HashMap的结构有了更深的了解，从网上找来一张HashMap的结构图，加深印象：  
 
 ![图片无法显示](../assets/images/hashmap.png "HashMap")
 
