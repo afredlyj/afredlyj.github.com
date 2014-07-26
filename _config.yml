@@ -18,6 +18,7 @@
         reading: 读书杂记
         funny: 折腾
         bug: 我见过很多bug
+        netty: netty
     categories: 
         - name: program
           title: 编程之旅
@@ -33,6 +34,8 @@
           title: 读书杂记
         - name: bug
           title: 我见过很多bug
+        - name : netty
+          title: netty
 
 
  meta:
