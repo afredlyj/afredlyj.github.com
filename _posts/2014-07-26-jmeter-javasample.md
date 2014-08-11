@@ -79,10 +79,9 @@ AbstractJavaSamplerClient并没有实现这个方法，需要子类自己实现�
  * getDefaultParameters方法  
  方法签名如下：  
  
- ~~~~  
- public Arguments getDefaultParameters()  
- 
- ~~~~  
+~~~~  
+public Arguments getDefaultParameters()  
+~~~~  
  
  该方法会返回一个参数列表，最后会在GUI界面现实，方便自定义参数值，如果该方法返回null，将不会现实参数列表，所以，实现自己的getDefaultParamters()方法是必要的，在GUI界面现实的参数列表，最终在`runTest`方法中会用到，即上文的`JavaSamplerContext.getParameter()`获取的一系列参数。所以我的实现如下：    
 
