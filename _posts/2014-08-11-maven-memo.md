@@ -1,3 +1,9 @@
+---
+layout: post  
+title: maven备忘 
+category: funny  
+---
+
 #### 执行单元测试
 
  * 忽略测试用例结果

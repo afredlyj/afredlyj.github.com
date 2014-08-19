@@ -1,4 +1,8 @@
-
+---
+layout: post  
+title: 了解Netyy线程模型  
+category: netty  
+---
 ### netty 线程模型
 
  * netty  boss和workder线程池使用`Executors.newCachedThreadPool()`，怎么固定线程数量？  
