@@ -37,8 +37,7 @@ Consistent nonlocking read, 是指InnoDB存储引擎通过行多版本控制的�
 
 非锁定读是InnoDB存储引擎默认设定下默认的读取方式。不同事务隔离级别并不都是一致性读，并且快照数据的定义也不同，比如数据表的一行，可能有多个历史版本，多个快照数据。
 
-1. 查询MySQL事务隔离级别
-
+1. 查询MySQL事务隔离级别  
 
  * 查看当前会话的隔离级别  
 
@@ -71,7 +70,8 @@ set session transaction isolatin level repeatable read;
 set global transaction isolation level repeatable read;  
 
 ~~~~  
- 2. 
+
+2. 
 
 ####  对读取操作加锁
 
