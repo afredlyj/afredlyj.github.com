@@ -8,6 +8,7 @@ category: netty
 
 
 ChannelHandler采用了职责链设计模式，Channel上的事件根据ChannelHandler的注册顺序依次执行。在Netty中，相邻的两个ChannelHandler并不直接交互，而是交给ChannelPipeline和ChannelHandlerContext，一般情况下，在服务器或者客户端启动时，需要调用BootStrap的`setPipelineFactory`方法，设置ChannelPipelineFactory，比如netty example就有如下示例代码：  
+
 ~~~~  
 
    
@@ -30,10 +31,11 @@ ChannelHandler采用了职责链设计模式，Channel上的事件根据ChannelH
         pipeline.addLast("handler", new HttpSnoopServerHandler());
         return pipeline;
     }
-}
-
+}  
 ~~~~  
-`getPipeline`方法会在boss线程accept连接时被调用：  
+
+`getPipeline`方法会在boss线程accept连接时被调用： 
+
 ~~~~  
 
     private static void registerAcceptedChannel(NioServerSocketChannel parent, SocketChannel acceptedSocket,
@@ -65,7 +67,6 @@ ChannelHandler采用了职责链设计模式，Channel上的事件根据ChannelH
             }
         }
     }
-
 ~~~~
 
 随后，boss线程会将该Channel注册到worker线程的任务队列中，交给worker线程处理，这是Netty Reactor线程模型的一部分，具体的处理流程我还不是很清楚，关于Reactor模式，更多信息可以访问[这里](http://www.cs.wustl.edu/~schmidt/PDF/reactor-siemens.pdf
