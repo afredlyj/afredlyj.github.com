@@ -41,24 +41,37 @@ Consistent nonlocking read, 是指InnoDB存储引擎通过行多版本控制的�
 
 
  * 查看当前会话的隔离级别  
+
 ~~~~  
+  
 select @@tx_isolation;  
-~~~~  
 
+~~~~  
+  
  * 查看系统当前隔离级别  
-~~~~  
-select @@global.tx_isolation;   
-~~~~ 
- * 设置当前会话隔离级别  
-~~~~  
-set session transaction isolatin level repeatable read;  
-~~~~ 
- * 设置系统当前隔离级别  
-~~~~  
-set global transaction isolation level repeatable read;  
-~~~~ 
 
-2. 
+~~~~  
+ 
+select @@global.tx_isolation;   
+
+~~~~  
+ 
+ * 设置当前会话隔离级别  
+
+~~~~
+  
+set session transaction isolatin level repeatable read;  
+
+~~~~
+ 
+ * 设置系统当前隔离级别  
+
+~~~~
+  
+set global transaction isolation level repeatable read;  
+
+~~~~  
+ 2. 
 
 ####  对读取操作加锁
 
