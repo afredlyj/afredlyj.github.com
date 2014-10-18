@@ -4,14 +4,13 @@ title: ActiveMQ 使用搜集
 category: program
 ---
 
-第一次使用ActiveMQ（以下简称mq）是在支付通知服务中，当时同事草草封装之后，没有压力测试，我就直接用到正式服务中，由于支付订单量并不大，所以线上一直没有问题，后来将这个工具包用到 CRM 系统中，就发现问题频繁出现，吃了一回哑巴亏。现在将之前使用过程中忽略的地方记录下来，方便以后查阅。在整个过程中，并没有翻阅ActiveMQ的源码，仅仅依靠官方文档和自己编写的示例代码总结得来，可能有些地方还是理解不到位，记录下来。
+第一次使用ActiveMQ（以下简称mq）是在支付通知服务中，当时草草封装之后，没有压力测试，就直接用到正式服务中，由于支付订单量并不大，所以线上一直没有问题，后来将这个工具包用到 CRM 系统中，就发现问题频繁出现，吃了一回哑巴亏。现在将之前使用过程中忽略的地方记录下来，方便以后查阅。在整个过程中，并没有翻阅ActiveMQ的源码，仅仅依靠官方文档和自己编写的示例代码总结得来，可能有些地方还是理解不到位，记录下来。
 
 ##Producer Flow Control##
 
-mq自己实现了Flow Control（流量控制，默认开启），在mq的版本中，4.x和5.x流量控制实现原理并不相同，这里只讨论5.x。在5.0中，broker通过检测内存或者文件大小，判断是否已经达到容量上限，如果到达上限，消息处理速度就会被减慢，默认情况下，producer会阻塞，不会再将消息发送到broker，直到broker有空闲容量，整个过程中，producer端并不会有异常日志，可以再broker的配置文件中设置`sendFailNoSpaceAfterTimeout`或`sendFailNoSpace`，用法如下：
+mq自己实现了Flow Control（流量控制，默认开启），在mq的版本中，4.x和5.x流量控制实现原理并不相同，前者通过 TCP Flow Control 实现流量控制，只能针对链接，而5.x之后的PFC，能针对某个特定的producer，这里只讨论5.x。在5.0中，broker通过检测内存或者文件大小，判断是否已经达到容量上限，如果到达上限，broker就会减慢对消息的处理。默认情况下，producer会阻塞，不会再将消息发送到broker，直到broker有空闲容量，整个过程中，producer端并不会有异常日志，可以在broker的配置文件中设置`sendFailNoSpaceAfterTimeout`或`sendFailNoSpace`，设置之后，如果broker容量不足，producer端就能捕获到`avax.jms.ResourceAllocationException`，配置方法如下：
 
 ~~~~  
-
 <systemUsage>
  <systemUsage sendFailIfNoSpace="true">
    <memoryUsage>
@@ -29,7 +28,7 @@ mq自己实现了Flow Control（流量控制，默认开启），在mq的版本�
 </systemUsage>  
 ~~~~  
 
-producer端异步发送时，并不会等待broker的确认，所以默认情况下，即使达到容量上限，producer仍然没法知晓，可以通过改变connection的`producerWindowSize`属性修改默认配置：
+当producer端采用异步发送时，并不会等待broker的确认消息，所以默认情况下，即使达到容量上限，producer仍然没法知晓，可以通过改变connection的`producerWindowSize`属性修改默认配置：
 
 ~~~~  
 
@@ -46,22 +45,23 @@ producerWindowSize官方解释如下：
 
 >The ProducerWindowSize is the maximum number of bytes of data that a producer will transmit to a broker before waiting for acknowledgment messages from the broker that it has accepted the previously sent messages.
 
+即，在producer发送`producerWindowSize`字节的数据后，broker会回包通知producer，在此之前的消息都已经被broker接收。
+
 如果使用同步发送，或者异步发送但配置了producerWindowSize属性，一旦达到容量上限，broker会阻塞当前producer，而不是整个链接，当有空闲容量时，broker会回一个`ProducerAck`。如果producer继续发送消息，broker将阻塞整个connection，倘若此时的consumer和producer共用同一个connection，将会导致死锁。
 
 ##异步和同步发送##
 
-
-[这里](http://activemq.apache.org/how-do-i-enable-asynchronous-sending.html)大致介绍了mq同步发送消息的处理流程。
+mq提供消息同步和异步发送两种方式，如果能接受少量消息丢失，可以采用异步发送，否则用同步。[这里](http://activemq.apache.org/how-do-i-enable-asynchronous-sending.html)大致介绍了mq同步发送消息的处理流程。
 
 ##Prefetch limit##
 
-###机制介绍###
+####机制介绍####
 
-mq为了提高吞吐量，采取prefetch 机制，即consumer在内存中维护一个消息的缓冲区，通过这种方式，consumer并不需要每条消息都主动请求broker，而是broker会push定量的消息到consumer端，以此降低频繁网络请求导致的性能损耗。
+mq为了提高吞吐量，采取prefetch 机制，即consumer端会在内存中维护一个消息的缓冲区，存放需要消费的消息，通过这种方式，consumer并不需要每条消息都主动请求（poll）broker，而是broker会push定量的消息到consumer端，以此降低频繁网络请求导致的性能损耗。
 
-这种机制存在风险，尤其是consumer的消息处理速度跟不上broker push的速度时。因此，mq提供`prefetch limit`参数限制每次push到consumer的消息数量。当达到`prefetch limit`上限，consumer不会再收到消息，直到consumer给broker发送确认消息。
+这种机制存在风险，尤其是consumer的消息处理速度跟不上broker push的速度时，这会导致大量消息充斥consumer的缓冲区，可能出现一个consumer繁忙，另一个consumer空闲的情况，并不利于消息及时处理。因此，mq提供`prefetch limit`参数限制每次push到consumer的消息数量。当达到`prefetch limit`上限，consumer不会再收到消息，直到consumer给broker发送确认消息。
 
-如果consumer消息处理足够快，可以调大limit上限，当该参数设置为0时，表示关闭prefect，consumer每次主动从broker拉取消息，而不是broker将消息push到consumer。不同服务的默认prefetch limit值如下：
+如果consumer消息处理足够快，可以调大limit上限，这样整个系统的性能会比较可观。当该参数设置为0时，表示关闭prefect，consumer每次主动从broker拉取（poll）消息，而不是broker将消息push到consumer。不同服务的默认prefetch limit值如下：
 
 >persistent queues (default value: 1000)  
 >non-persistent queues (default value: 1000)  
@@ -81,7 +81,7 @@ For this reason, the org.apache.activemq.pool.PooledConnectionFactory does not p
 The problem is visible with the Spring DMLC when the cache level is set to CACHE_CONSUMER and there are multiple concurrent consumers.
 One solution to this problem is to use a prefetch of 0 for a pooled consumer, in this way, it will poll for messages on each call to receive(timeout). Another option is to enable the AbortSlowAckConsumerStrategy on the broker to disconnect consumers that have not acknowledged a Message after some configurable time period.
 
-###测试demo###
+####测试demo####
 
 为了测试prefetch对consumer的影响，写了一些测试代码，具体项目代码在[这里](https://github.com/afredlyj/activeMQDemo)。
 
@@ -151,7 +151,7 @@ One solution to this problem is to use a prefetch of 0 for a pooled consumer, in
 	
 ~~~~
 
-`applicationContext-with-sleep-receiver.xml`文件是consumer端的配置文件，messageListener是单例，并将最大consumer并发数设置2，在`brokerURL`中添加了`jms.prefetchPolicy.queuePrefetch=100`属性，测试代码如下：
+`applicationContext-with-sleep-receiver.xml`文件是consumer端的配置文件，messageListener是单例，并将最大consumer并发数设置2，默认是1，由于consumer由DMLC管理，测试过程中只能通过日志框架打印线程ID，以此观察两个consumer的消息处理过程。在`brokerURL`中添加了`jms.prefetchPolicy.queuePrefetch=100`属性，测试代码如下：
 
 ~~~~
 
@@ -187,9 +187,9 @@ One solution to this problem is to use a prefetch of 0 for a pooled consumer, in
 
 ##Spring + JmsTemplate 收发消息##
 
-现在线上使用`JmsTemplate.send`发送消息到broker，并使用`DefaultMessageListenerContainer`接收消息，并没有发现异常，相比之前的版本，简直幸福太多。
+现在线上使用`JmsTemplate.send`发送消息到broker，并使用`DefaultMessageListenerContainer`接收消息，并没有发现异常，相比之前的版本，总结了使用过程中应该注意的点。
 
-###使用JmsTemplate 需要注意的点###
+####使用JmsTemplate 需要注意的点####
 
 mq官网关于JmsTemplate使用过程中应该注意的点有详细[说明](http://activemq.apache.org/jmstemplate-gotchas.html)。我这里自己再总结一次。
 
@@ -199,13 +199,17 @@ mq官网关于JmsTemplate使用过程中应该注意的点有详细[说明](http
  >b、将consumer端改为`DefaultMessageListenerContainer`接收。   
  
 0. 尽量避免使用JmsTemplate.receive方法  
-如果当前broker中没有消息，consumer端调用JmsTemplate.receive方法会阻塞。另外，由于prefetch机制的作用，而receive方法每次调用之后就会close掉当前的connection、session和consumer，会浪费网络带宽，比如，设置prefetch limit为1000，当broker中消息较多时（ > 1000），broker将会push 1000条消息到consumer端，由于receive每次处理一条消息，剩下的999条消息即使到达consumer端的缓冲区中，仍然无法消息，broker仍然需要重递这些消息，可以根据这些消息的`JMSXDeliveryCount`属性值判断该消息是否被重递。
+如果当前broker中没有消息，consumer端调用JmsTemplate.receive方法会阻塞，虽然可以设置receive的超时时间，但是根据调用一次，创建一个新connection、session和consumer的尿性，原生的recevie方法简直鸡肋。
+另外，由于prefetch机制的作用，同时receive方法每次调用之后就会close掉当前的connection、session和consumer，会浪费网络带宽，比如，设置prefetch limit为1000，当broker中消息较多时（ > 1000），broker将会push 1000条消息到consumer端，由于receive每次处理一条消息，剩下的999条消息即使到达consumer端的缓冲区中，仍然无法消息，broker仍然需要重递这些消息（可以根据这些消息的`JMSXDeliveryCount`属性值判断该消息是否被重递），如此反复，显然会浪费很多资源。
 
-###DefaultMessageListenerContainer的使用###
+####DefaultMessageListenerContainer的使用####
 
-`DefaultMessageListenerContainer`支持动态扩容，另外，使用DMLC时，不要使用`PooledConnectionFactory`或`CachingConnectionFactory`，而应该将这部分管理交给它自己处理。详细说明可以参考[官方文档](http://docs.spring.io/spring/docs/3.2.7.RELEASE/javadoc-api/org/springframework/jms/listener/DefaultMessageListenerContainer.html)。
+`DefaultMessageListenerContainer`支持动态扩容，另外，使用DMLC时，不要使用`PooledConnectionFactory`或`CachingConnectionFactory`，而应该将资源管理交给它自己处理。详细说明可以参考[官方文档](http://docs.spring.io/spring/docs/3.2.7.RELEASE/javadoc-api/org/springframework/jms/listener/DefaultMessageListenerContainer.html)。
 
-如果并不想在Spring配置文件中初始化DMLC,而偏向于在代码中创建，那么在创建之后需要初始化，否则container并不能接收消息，正确的做法是调用container的`afterPropertiesSet`和`start`方法。
+如果并不想在Spring配置文件中初始化DMLC，而偏向于在代码中创建，那么在创建之后需要初始化，否则container并不能接收消息，正确的做法是调用container的`afterPropertiesSet`和`start`方法。
 
+##总结##
+
+这篇文章只记录了ActiveMQ的基本用法，以及会影响服务性能的几个点，但是，对消息的持久化、ActiveMQ集群并没有深入了解，这些都是以后需要研究的点。
 
 
