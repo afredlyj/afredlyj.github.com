@@ -214,6 +214,8 @@ mq官网关于JmsTemplate使用过程中应该注意的点有详细[说明](http
 `DefaultMessageListenerContainer`支持动态扩容，另外，使用DMLC时，不要使用`PooledConnectionFactory`或`CachingConnectionFactory`，而应该将资源管理交给它自己处理。详细说明可以参考[官方文档](http://docs.spring.io/spring/docs/3.2.7.RELEASE/javadoc-api/org/springframework/jms/listener/DefaultMessageListenerContainer.html)。
 
 如果并不想在Spring配置文件中初始化DMLC，而偏向于在代码中创建，那么在创建之后需要初始化，否则container并不能接收消息，正确的做法是调用container的`afterPropertiesSet`和`start`方法。
+
+
 ##总结##
 
 这篇文章只记录了ActiveMQ的基本用法，以及会影响服务性能的几个点，但是，对消息的持久化、ActiveMQ集群并没有深入了解，这些都是以后需要研究的点。
