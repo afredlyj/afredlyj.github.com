@@ -199,7 +199,7 @@ mq官网关于JmsTemplate使用过程中应该注意的点有详细[说明](http
 > * 将consumer端改为`DefaultMessageListenerContainer`接收。 
 
 0. JmsTemplate.send 默认采用同步发送  
-默认情况下，send方法会调用`ActiveMQConnection.syncSendPacket`，也就是走的同步发送，producer在发送消息到broker，broker将消息持久话，并返回`ProducerAck`后，此次调用才算完成，如果不计较少量消息丢失，可以配置brokerURL，使用异步发送：
+默认情况下，send方法会调用`ActiveMQConnection.syncSendPacket`，也就是走的同步发送，producer在发送消息到broker，broker将消息持久话，并返回`ProducerAck`后，此次调用才算完成，如果不计较少量消息丢失，可以配置brokerURL，使用异步发送：  
 ~~~~  
    tcp://127.0.0.1:61616?jms.useAsyncSend=true&jms.producerWindowSize=1024000
 ~~~~  
