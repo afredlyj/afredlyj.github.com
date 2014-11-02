@@ -5,11 +5,15 @@ category: program
 ---  
 
 
-第一次使用ActiveMQ（以下简称mq）是在支付通知服务中，当时草草封装之后，没有压力测试，就直接用到正式服务中，由于支付订单量并不大，所以线上一直没有问题，后来将这个工具包用到 CRM 系统中，就发现问题频繁出现，吃了一回哑巴亏。现在将之前使用过程中忽略的地方记录下来，方便以后查阅。在整个过程中，并没有翻阅ActiveMQ的源码，仅仅依靠官方文档和自己编写的示例代码总结得来，可能有些地方还是理解不到位，记录下来。
+第一次使用ActiveMQ（以下简称mq）是在支付通知服务中，当时草草封装之后，没有压力测试，就直接用到正式服务中，由于支付订单量并不大，所以线上一直没有问题，后来将这个工具包用到 CRM 系统中，就发现问题频繁出现，吃了一回哑巴亏。
+
+现在将之前使用过程中忽略的地方记录下来，方便以后查阅。在整个过程中，并没有翻阅ActiveMQ的源码，仅仅依靠官方文档和自己编写的示例代码总结得来，可能有些地方还是理解不到位，还需要继续深究。
 
 ##Producer Flow Control##
 
-mq自己实现了Flow Control（流量控制，默认开启），在mq的版本中，4.x和5.x流量控制实现原理并不相同，前者通过 TCP Flow Control 实现流量控制，只能针对链接，而5.x之后的PFC，能针对某个特定的producer，这里只讨论5.x。在5.0中，broker通过检测内存或者文件大小，判断是否已经达到容量上限，如果到达上限，broker就会减慢对消息的处理。默认情况下，producer会阻塞，不会再将消息发送到broker，直到broker有空闲容量，整个过程中，producer端并不会有异常日志，可以在broker的配置文件中设置`sendFailNoSpaceAfterTimeout`或`sendFailNoSpace`，设置之后，如果broker容量不足，producer端就能捕获到`avax.jms.ResourceAllocationException`，配置方法如下：
+mq自己实现了Flow Control（流量控制，默认开启），在mq的版本中，4.x和5.x流量控制实现原理并不相同，前者通过 TCP Flow Control 实现流量控制，只能针对链接，而5.x之后的PFC，能针对某个特定的producer，这里只讨论5.x。在5.0中，broker通过检测内存或者文件大小，判断是否已经达到容量上限，如果到达上限，broker就会减慢对消息的处理。默认情况下，producer会阻塞，不会再将消息发送到broker，直到broker有空闲容量。如果发现管理后台消息消费比较慢，甚至有消息堆积，可以尝试从这方面入手。
+
+需要注意的是，默认情况下，broker流量控制的整个过程producer端并不会有异常日志，加大了对这种异常情况排查的难度。可以在broker的配置文件中设置`sendFailNoSpaceAfterTimeout`或`sendFailNoSpace`，设置之后，如果broker容量不足，producer端就能捕获到`javax.jms.ResourceAllocationException`，配置方法如下：
 
 ~~~~  
 <systemUsage>
@@ -62,7 +66,7 @@ mq为了提高吞吐量，采取prefetch 机制，即consumer端会在内存中�
 
 这种机制存在风险，尤其是consumer的消息处理速度跟不上broker push的速度时，这会导致大量消息充斥consumer的缓冲区，可能出现一个consumer繁忙，另一个consumer空闲的情况，并不利于消息及时处理。因此，mq提供`prefetch limit`参数限制每次push到consumer的消息数量。当达到`prefetch limit`上限，consumer不会再收到消息，直到consumer给broker发送确认消息。
 
-如果consumer消息处理足够快，可以调大limit上限，这样整个系统的性能会比较可观。当该参数设置为0时，表示关闭prefect，consumer每次主动从broker拉取（poll）消息，而不是broker将消息push到consumer。不同服务的默认prefetch limit值如下：
+如果consumer消息处理足够快，可以调大limit上限，这样整个系统的性能会比较可观。当该参数设置为0时，表示关闭prefect，consumer每次主动从broker拉取（poll）消息，而不是broker将消息push到consumer。mq不同服务的默认prefetch limit值如下：
 
 >persistent queues (default value: 1000)  
 >non-persistent queues (default value: 1000)  
@@ -74,6 +78,8 @@ mq为了提高吞吐量，采取prefetch 机制，即consumer端会在内存中�
 ~~~~  
 tcp://localhost:61616?jms.prefetchPolicy.queuePrefetch=100
 ~~~~  
+
+将每个队列prefetch limit设置为100，即broker每次都会将100个消息push到consumer端。
 
 当使用`DefaultMessageListenerContainer`时，prefetch可能会引起问题，官方文档是这么说的：
 
@@ -200,7 +206,7 @@ mq官网关于JmsTemplate使用过程中应该注意的点有详细[说明](http
 > * 将consumer端改为`DefaultMessageListenerContainer`接收。 
 
 0. JmsTemplate.send 默认采用同步发送  
-默认情况下，send方法会调用`ActiveMQConnection.syncSendPacket`，也就是走的同步发送，producer在发送消息到broker，broker将消息持久话，并返回`ProducerAck`后，此次调用才算完成，如果不计较少量消息丢失，可以配置brokerURL，使用异步发送：  
+即使按照上一条，使用`PooledConnectionFactory`或`CachingConnectionFactory`后，测试发现producer端的性能提升并不明显，问题在于，默认情况下，send方法会调用`ActiveMQConnection.syncSendPacket`，也就是走的同步发送。producer在发送消息到broker，broker将消息持久化，并返回`ProducerAck`后，此次send操作才算完成，如果不计较少量消息丢失，可以配置brokerURL，使用异步发送：  
 ~~~~  
    tcp://127.0.0.1:61616?jms.useAsyncSend=true&jms.producerWindowSize=1024000  
 ~~~~  
@@ -218,9 +224,6 @@ mq官网关于JmsTemplate使用过程中应该注意的点有详细[说明](http
 ##总结##
 
 这篇文章只记录了ActiveMQ的基本用法，以及会影响服务性能的几个点，但是，对消息的持久化、ActiveMQ集群并没有深入了解，这些都是以后需要研究的点。
-
-
-
 
 
 
