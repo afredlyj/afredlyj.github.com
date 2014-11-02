@@ -1,8 +1,9 @@
 ---
-layout: post
-title: ActiveMQ 使用搜集
-category: program
----
+layout: post  
+title: ActiveMQ 使用搜集  
+category: program  
+---  
+
 
 第一次使用ActiveMQ（以下简称mq）是在支付通知服务中，当时草草封装之后，没有压力测试，就直接用到正式服务中，由于支付订单量并不大，所以线上一直没有问题，后来将这个工具包用到 CRM 系统中，就发现问题频繁出现，吃了一回哑巴亏。现在将之前使用过程中忽略的地方记录下来，方便以后查阅。在整个过程中，并没有翻阅ActiveMQ的源码，仅仅依靠官方文档和自己编写的示例代码总结得来，可能有些地方还是理解不到位，记录下来。
 
@@ -201,7 +202,7 @@ mq官网关于JmsTemplate使用过程中应该注意的点有详细[说明](http
 0. JmsTemplate.send 默认采用同步发送  
 默认情况下，send方法会调用`ActiveMQConnection.syncSendPacket`，也就是走的同步发送，producer在发送消息到broker，broker将消息持久话，并返回`ProducerAck`后，此次调用才算完成，如果不计较少量消息丢失，可以配置brokerURL，使用异步发送：  
 ~~~~  
-   tcp://127.0.0.1:61616?jms.useAsyncSend=true&jms.producerWindowSize=1024000
+   tcp://127.0.0.1:61616?jms.useAsyncSend=true&jms.producerWindowSize=1024000  
 ~~~~  
  
 0. 尽量避免使用JmsTemplate.receive方法  
