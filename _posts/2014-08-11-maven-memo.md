@@ -88,3 +88,11 @@ category: funny
 ~~~~  
 
 `maven-jar-plugin`指定了入口类和依赖jar包的路径，`maven-dependency-plugin` 将项目的依赖包拷贝到`${project.build.directory}/lib`目录，如果需要更新jar包，只需要将该目录的指定jar包上传到服务器即可，而最后的项目jar包包名为`>${project.artifactId}-${maven.build.timestamp}`，在target目录下，可以发现，这时候的jar包只有几十k的大小了。
+
+#### parent节点的relativePath
+
+>The relative path of the parent pom.xml file within the check out. If not specified, it defaults to ../pom.xml. Maven looks for the parent POM first in this location on the filesystem, then the local repository, and lastly in the remote repo. relativePath allows you to select a different location, for example when your structure is flat, or deeper without an intermediate parent POM. However, the group ID, artifact ID and version are still required, and must match the file in the location given or it will revert to the repository for the POM. This feature is only for enhancing the development in a local checkout of that project. Set the value to an empty string in case you want to disable the feature and always resolve the parent POM from the repositories. 
+Default value is: ../pom.xml.
+
+
+
