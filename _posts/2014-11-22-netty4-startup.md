@@ -1,4 +1,9 @@
-## netty 4 启动流程分析
+---
+layout: post  
+title: netty 4 启动流程分析
+category: netty  
+---
+
 
 >根据EchoServer初始化代码，跟踪netty 4的初始化
 
