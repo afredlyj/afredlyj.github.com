@@ -148,7 +148,7 @@ netty初始化时，`public DefaultChannelPipeline(Channel channel)`  传入的�
 >todo : EventExecutor和EventExecutorGroup的区别？
 
 
-### <span id="nioeventloopgroup"]>NioEventLoopGroup 初始化</span>
+### <span id="nioeventloopgroup">NioEventLoopGroup 初始化</span>
 
 NioEventLoopGroup初始化主要任务是创建线程池和线程，并且创建任务队列。
 
@@ -368,7 +368,7 @@ HeadHandler <--> channelInitializer <--> TailHandler
     }
 ~~~~
 
-channel初始化之后（init方法），回到`initAndRegister`方法，继而调用了`MultithreadEventLoopGroup.register`：
+channel初始化之后（init方法），回到`initAndRegister`方法，继而调用了`MultithreadEventLoopGroup.register`，：
 
 ~~~~  
 // MultithreadEventExecutorGroup.java
@@ -648,10 +648,6 @@ HeadHandler <--> channelInitializer <--> ServerBootstrapAcceptor <--> TailHandle
 > 在调试过程中，发现pipeline中看不到HeadHandler，原因在于`names`和`toString`方法均将`head`跳过，详情可以参考`DefaultChannelPipeline`源码。
 
 
->回到上文，pipeline的处理逻辑，最后会调用handler.channelRead方法。暂时先分析到这里，至于怎么在各个handler中跳转，稍后再看。
-
-> 数据读取操作什么时候启动，流程怎样的？
-
 ### netty 4 读取数据
 
 #### NioEventLoop 任务线程执行
@@ -669,11 +665,10 @@ for (;;) {
 }  
 ~~~~
 
-`processSelectedKeys`方法根据`readOps`判断是读还是写，服务端接受链接时，我们暂时只考虑读操作，读操作会调用`unsafe.read()`，对于`NioServerSocketChannel`，它的读操作就是接收客户端的TCP连接： 
+`processSelectedKeys`方法根据`readOps`判断是读还是写，服务端接受链接时，我们暂时只考虑读操作，读操作会调用`unsafe.read()`，对于`NioServerSocketChannel`，它的读操作就是接收客户端的TCP连接，创建`NioSocketChannel`对象，在`NioSocketChannel`中，对应的unSafe为`NioByteUnsafe` ，`AbstractNioUnsafe`的子类： 
 
 
-~~~~
-
+~~~~  
 //AbstractNioUnsafe.java
 try {
         for (;;) {
@@ -697,6 +692,32 @@ try {
 
   for (int i = 0; i < readBuf.size(); i ++) {
         pipeline.fireChannelRead(readBuf.get(i));
+    }
+    
+// NioServerSocketChannel.java
+    @Override
+    protected int doReadMessages(List<Object> buf) throws Exception {
+
+        logger.info("read message");
+
+        SocketChannel ch = javaChannel().accept();
+
+        try {
+            if (ch != null) {
+                buf.add(new NioSocketChannel(this, ch));
+                return 1;
+            }
+        } catch (Throwable t) {
+            logger.warn("Failed to create a new channel from an accepted socket.", t);
+
+            try {
+                ch.close();
+            } catch (Throwable t2) {
+                logger.warn("Failed to close a socket.", t2);
+            }
+        }
+
+        return 0;
     }
 ~~~~  
 
@@ -745,7 +766,7 @@ try {
 
 ~~~~
 
-从上面的代码得知，在该方法`childGroup.register`之前，所有的处理都是在`parantGroup`（即mainReactor）中。
+从上面的代码得知，在该方法`childGroup.register`之前，所有的处理都是在`parantGroup`（即mainReactor）中。`childGroup.register(child)`类似上文`initAndRegister`中`group().register(channel, regPromise)`，启动childGroup中的线程。
 
 
 
