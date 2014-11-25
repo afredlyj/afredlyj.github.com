@@ -94,5 +94,9 @@ category: funny
 >The relative path of the parent pom.xml file within the check out. If not specified, it defaults to ../pom.xml. Maven looks for the parent POM first in this location on the filesystem, then the local repository, and lastly in the remote repo. relativePath allows you to select a different location, for example when your structure is flat, or deeper without an intermediate parent POM. However, the group ID, artifact ID and version are still required, and must match the file in the location given or it will revert to the repository for the POM. This feature is only for enhancing the development in a local checkout of that project. Set the value to an empty string in case you want to disable the feature and always resolve the parent POM from the repositories. 
 Default value is: ../pom.xml.
 
+#### dependencies和dependencyManagement
+
+dependencyManagement 中的 dependencies 元素只表明依赖项版本的优先选择，并不影响项目的依赖项。所以Parent POM的有dependencyManagement 中的 dependencies 元素不会自动的加到child的dependencies 列表里。只有child里有同样的dependencies 时，才会被parent中dependencyManagement 中的 dependencies 元素所影响（主要是版本信息）。
+
 
 
