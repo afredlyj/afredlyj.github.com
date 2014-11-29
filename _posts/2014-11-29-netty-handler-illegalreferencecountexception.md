@@ -61,7 +61,8 @@ pipeline初始化代码如下：
 CheckSumHandler是`MessageToMessageDecoder`的子类，实现`decode`方法，CheckSumHandler会对请求数据验证，如果非法，直接拒绝，返回404，否则继续下面的业务落后，执行HttpServerHandler，HttpServerHandler是`SimpleChannelInboundHandler`的子类，这里只是回写字符串，代码不需要展示。
 
 这段代码如果checkSum失败，服务端可以正常运行，但是如果checkSum通过，在HttpServerHandler中会有如下异常：  
-~~~~
+
+~~~~  
 
 10:08:09.834 [nioEventLoopGroup-3-1] ERROR a.d.h.s.handler.HttpServerHandler 87 - http server handler exception
 io.netty.util.IllegalReferenceCountException: refCnt: 0, decrement: 1
@@ -92,10 +93,13 @@ io.netty.util.IllegalReferenceCountException: refCnt: 0, decrement: 1
 
 ~~~~
 
+
 #### 异常分析
 
 通过逐步debug，发现HttpServerHandler报异常的代码在`getBytes`方法中：  
+
 ~~~~  
+
  ByteBuf content = request.content();
  int readableBytes = content.readableBytes();
  byte[] bs = null;
@@ -106,6 +110,7 @@ io.netty.util.IllegalReferenceCountException: refCnt: 0, decrement: 1
 这里的content实现为`CompositeByteBuf`，查看源码，追踪下面的方法：
 
 ~~~~
+
 /**
  * Should be called by every method that tries to access the buffers content to check
  * if the buffer was released before.
@@ -123,6 +128,7 @@ protected final void ensureAccessible() {
 回到CheckSumHandler的父类`MessageToMessageDecoder`，它会在decode之后release：
 
 ~~~~  
+
 if (acceptInboundMessage(msg)) {
     @SuppressWarnings("unchecked")
     I cast = (I) msg;
@@ -139,6 +145,7 @@ if (acceptInboundMessage(msg)) {
 所以需要在CheckSumHandler中将引用计数加1，根据谁最后使用，谁负责释放的原则，HttpServerHandler会负责调用release方法，这部分功能直接由父类`SimpleChannelInboundHandler`实现，更改后的代码如下：
 
 ~~~~  
+
 @Override
     protected void decode(ChannelHandlerContext ctx, FullHttpRequest msg, List<Object> out) throws Exception {
 
