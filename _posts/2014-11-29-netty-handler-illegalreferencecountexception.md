@@ -60,36 +60,13 @@ pipeline初始化代码如下：
 
 CheckSumHandler是`MessageToMessageDecoder`的子类，实现`decode`方法，CheckSumHandler会对请求数据验证，如果非法，直接拒绝，返回404，否则继续下面的业务落后，执行HttpServerHandler，HttpServerHandler是`SimpleChannelInboundHandler`的子类，这里只是回写字符串，代码不需要展示。
 
-这段代码如果checkSum失败，服务端可以正常运行，但是如果checkSum通过，在HttpServerHandler中会有如下异常：  
+这段代码如果checkSum失败，服务端可以正常运行，但是如果checkSum通过，在HttpServerHandler中会有如下异常：
 
-~~~~  
+~~~~    
 
 10:08:09.834 [nioEventLoopGroup-3-1] ERROR a.d.h.s.handler.HttpServerHandler 87 - http server handler exception
 io.netty.util.IllegalReferenceCountException: refCnt: 0, decrement: 1
-	at io.netty.buffer.AbstractReferenceCountedByteBuf.release(AbstractReferenceCountedByteBuf.java:102) ~[netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.handler.codec.http.DefaultFullHttpRequest.release(DefaultFullHttpRequest.java:77) ~[netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.util.ReferenceCountUtil.release(ReferenceCountUtil.java:68) ~[netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:110) ~[netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.DefaultChannelHandlerContext.invokeChannelRead(DefaultChannelHandlerContext.java:340) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.DefaultChannelHandlerContext.fireChannelRead(DefaultChannelHandlerContext.java:326) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.DefaultChannelHandlerContext.invokeChannelRead(DefaultChannelHandlerContext.java:340) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.DefaultChannelHandlerContext.fireChannelRead(DefaultChannelHandlerContext.java:326) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.DefaultChannelHandlerContext.invokeChannelRead(DefaultChannelHandlerContext.java:340) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.DefaultChannelHandlerContext.fireChannelRead(DefaultChannelHandlerContext.java:326) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:155) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.DefaultChannelHandlerContext.invokeChannelRead(DefaultChannelHandlerContext.java:340) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.DefaultChannelHandlerContext.fireChannelRead(DefaultChannelHandlerContext.java:326) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:785) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:116) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:494) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:461) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:378) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:350) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at io.netty.util.concurrent.SingleThreadEventExecutor$2.run(SingleThreadEventExecutor.java:101) [netty-all-4.0.17.Final.jar:4.0.17.Final]
-	at java.lang.Thread.run(Thread.java:745) [na:1.7.0_60-ea]
-10:08:09.838 [nioEventLoopGroup-3-1] INFO  a.d.h.s.handler.HttpServerHandler 99 - flush
+	at io.netty.buffer.AbstractReferenceCountedByteBuf.release(AbstractReferenceCountedByteBuf.java:102)
 
 ~~~~
 
