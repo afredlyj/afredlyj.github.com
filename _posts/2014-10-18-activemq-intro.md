@@ -202,14 +202,14 @@ mq官网关于JmsTemplate使用过程中应该注意的点有详细[说明](http
 
 0. 每次调用JmsTemplate的发送和接收方法都会创建connection、session、producer或consumer   
 这种特性在消息量并不大的时候并不会对服务产生较大影响，一旦消息量增大，由于需要频繁的创建网络链接，从而导致服务性能急剧下降，甚至影响到正常业务。之前一次支付改版，就是因为没有池化网络链接，在下班高峰期producer端几近崩溃，所以这里需要做两件事：  
-> * producer端的connectionFactory由普通的`ActiveMQConnectionFactory`改为`PooledConnectionFactory`或`CachingConnectionFactory`，同时注意调整这两个connectionFactory的参数设置。  
-> * 将consumer端改为`DefaultMessageListenerContainer`接收。 
+a. producer端的connectionFactory由普通的`ActiveMQConnectionFactory`改为`PooledConnectionFactory`或`CachingConnectionFactory`，同时注意调整这两个connectionFactory的参数设置。  
+b. 将consumer端改为`DefaultMessageListenerContainer`接收。 
 
 0. JmsTemplate.send 默认采用同步发送  
 即使按照上一条，使用`PooledConnectionFactory`或`CachingConnectionFactory`后，测试发现producer端的性能提升并不明显，问题在于，默认情况下，send方法会调用`ActiveMQConnection.syncSendPacket`，也就是走的同步发送。producer在发送消息到broker，broker将消息持久化，并返回`ProducerAck`后，此次send操作才算完成，如果不计较少量消息丢失，可以配置brokerURL，使用异步发送：  
-~~~~  
+  
    tcp://127.0.0.1:61616?jms.useAsyncSend=true&jms.producerWindowSize=1024000  
-~~~~  
+  
  
 0. 尽量避免使用JmsTemplate.receive方法  
 如果当前broker中没有消息，consumer端调用JmsTemplate.receive方法会阻塞，虽然可以设置receive的超时时间，但是根据调用一次，创建一个新connection、session和consumer的尿性，原生的recevie方法简直鸡肋。

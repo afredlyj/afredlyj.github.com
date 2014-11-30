@@ -1,9 +1,11 @@
  markdown: kramdown
- pygments: true
- safe: false
+ highlighter: null
+ safe: true
  permalink: /posts/:title.html
  exclude:
     - README.md
+ gems:
+    - sitemap
 
  name: Afred's Blog
  host: afredlyj.github.io
@@ -36,7 +38,7 @@
           title: 我见过很多bug
         - name : netty
           title: netty
-
+    scrollingLoadCount: 0                          # 滚屏自动加载文章数量，“0”为关闭	
 
  meta:
     author: 
