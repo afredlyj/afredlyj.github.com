@@ -1,7 +1,7 @@
 ---
 layout: post  
 title: netty自定义handler异常 IllegalReferenceCountException
-category: netty  
+category: bug  
 ---
 
 最近看netty4的源码，自定义ChannelHandler，平时都是在pipeline最后添加一个Decoder完事，后来想想可以尝试将验证请求这部分功能添加到handler中，才引发下文提到的bug。
