@@ -179,6 +179,7 @@ String str13 = "'\'')\"";
 [Alt + d] 删除从光标当前位置，到当前字的结尾字符  
 
  * shell脚本调试
- >-x 选项
+
+>-x 选项
 
 来自[酷壳](http://coolshell.cn/articles/1379.html)
