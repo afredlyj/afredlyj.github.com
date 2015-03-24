@@ -1,6 +1,6 @@
 ---
 layout: post  
-title: 了解Netyy线程模型  
+title: 了解Netty线程模型  
 category: netty  
 ---
 ### netty 线程模型
