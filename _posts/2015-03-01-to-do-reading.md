@@ -19,7 +19,7 @@ category: reading
  
 #### 经济
 
- * ~~[大败局](http://www.amazon.cn/gp/product/B0089LOC56?psc=1&ref_=oh_aui_d_detailpage_o08_)~~
+ * [大败局](http://www.amazon.cn/gp/product/B0089LOC56?psc=1&ref_=oh_aui_d_detailpage_o08_)
  
 #### 纪实
 
