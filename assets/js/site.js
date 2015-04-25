@@ -63,7 +63,7 @@ var site = {
 			if (timer) {
 				clearTimeout(timer);
 			}
-			site.scrollingTimer = setTimeout(site.Handlers.deferLoad, 1000);
+			site.scrollingTimer = setTimeout(site.Handlers.deferLoad, 10000);
 		},
 		
 		onGCSEAPILoad: function () {
