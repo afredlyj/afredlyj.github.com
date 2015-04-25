@@ -177,3 +177,9 @@ String str13 = "'\'')\"";
 [Ctrl + d] 删除光标当前位置的字符  
 [Ctrl + y] 粘贴最后一个被删除的字  
 [Alt + d] 删除从光标当前位置，到当前字的结尾字符  
+
+ * shell脚本调试
+
+>-x 选项
+
+来自[酷壳](http://coolshell.cn/articles/1379.html)
