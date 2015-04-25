@@ -58,7 +58,7 @@ ok，分析之后就是证实，经过查看代码，确认线上的`SsoManager`
 
 #### 复现
 
-在分析完成之后，需要复现异常，证实上面的部分推测，测试[源码](https://github.com/afredlyj/javaBaseDemo)
+在分析完成之后，需要复现异常，证实上面的部分推测，测试[源码](https://github.com/afredlyj/javaBaseDemo)。
 
 
 
