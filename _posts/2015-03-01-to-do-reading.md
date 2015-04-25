@@ -15,7 +15,7 @@ category: reading
  
 #### 互联网
 
- * [黑客与画家](http://www.amazon.cn/%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%94%BB%E5%AE%B6-%E7%A1%85%E8%B0%B7%E5%88%9B%E4%B8%9A%E4%B9%8B%E7%88%B6Paul-Graham%E6%96%87%E9%9B%86-Paul-Graham/dp/B00ALPRKH0/ref=sr_1_1?ie=UTF8&qid=1425183218&sr=8-1&keywords=%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%94%BB%E5%AE%B6)
+ * <del>[黑客与画家](http://www.amazon.cn/%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%94%BB%E5%AE%B6-%E7%A1%85%E8%B0%B7%E5%88%9B%E4%B8%9A%E4%B9%8B%E7%88%B6Paul-Graham%E6%96%87%E9%9B%86-Paul-Graham/dp/B00ALPRKH0/ref=sr_1_1?ie=UTF8&qid=1425183218&sr=8-1&keywords=%E9%BB%91%E5%AE%A2%E4%B8%8E%E7%94%BB%E5%AE%B6)</del>
  
 #### 经济
 
@@ -23,7 +23,7 @@ category: reading
  
 #### 纪实
 
- * [天才在左疯子在右](http://www.amazon.cn/gp/product/B00HCXK8LY?psc=1&ref_=oh_aui_d_detailpage_o08_)
+ *  <del>[天才在左疯子在右](http://www.amazon.cn/gp/product/B00HCXK8LY?psc=1&ref_=oh_aui_d_detailpage_o08_)</del>
  
 #### 心理学
 
