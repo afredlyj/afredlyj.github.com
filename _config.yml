@@ -1,4 +1,6 @@
  markdown: kramdown
+ kramdown:
+  input: GFM
  highlighter: null
  safe: true
  permalink: /posts/:title.html
