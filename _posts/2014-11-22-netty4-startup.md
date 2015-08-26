@@ -665,11 +665,10 @@ for (;;) {
 }  
 ~~~~
 
-`processSelectedKeys`方法根据`readOps`判断是读还是写，服务端接受链接时，我们暂时只考虑读操作，读操作会调用`unsafe.read()`，对于`NioServerSocketChannel`，它的读操作就是接收客户端的TCP连接，创建`NioSocketChannel`对象，在`NioSocketChannel`中，对应的unSafe为`NioByteUnsafe` ，`AbstractNioUnsafe`的子类： 
-
+`processSelectedKeys`方法根据`readOps`判断是读还是写，服务端接受链接时，我们暂时只考虑读操作，读操作会调用`unsafe.read()`，对于`NioServerSocketChannel`，它的读操作就是接收客户端的TCP连接，创建`NioSocketChannel`对象，在`NioSocketChannel`中，对应的unSafe为`NioByteUnsafe` ，`AbstractNioUnsafe`的子类，看一下NioServerSocketChannel的读取操作：
 
 ~~~~  
-//AbstractNioUnsafe.java
+//AbstractNioMessageChannel.java
 try {
         for (;;) {
             int localRead = doReadMessages(readBuf);
