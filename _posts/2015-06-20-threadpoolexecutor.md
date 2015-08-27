@@ -4,7 +4,7 @@ title: JAVA线程池源码分析
 category: program
 ---
 
-#### ThreadPoolExecutor构造函数
+### ThreadPoolExecutor构造函数
 
 ThreadPoolExecutor构造函数提供比较多的参数配置，方便开发者自定义：
 
@@ -49,7 +49,7 @@ public ThreadPoolExecutor(int corePoolSize,
 
 如果在构造函数中没有指定threadFactory，默认会调用`Executors.defaultThreadFactory()`。默认的threadFactory，创建的所有线程属于同一个ThreadGroup，并且线程优先级相同，不是守护线程，也就是说，只要线程池没有退出，调用线程池的主线程也不会退出。根据默认的threadFactory，线程名称为`pool-#poolNumber#-#thread-threadNumber#`，可以通过jstack命令查看。
 
-#### 线程的生命周期
+### 线程的生命周期
 
 线程池只有在需要的时候才会创建新的线程。下面从`execute`函数入手分析，线程池中线程的生命周期：
 
@@ -79,7 +79,7 @@ else if (!addWorker(command, false))
 3. 即使往任务队列添加成功，仍然需要double-check保证线程池正常运行；  
 4. 如果添加任务队列失败，会尝试添加worker。  
 
-##### addWorker
+#### addWorker
 
 addWorker方法根据当前线程池的状态和设定的`core`或`maximum`判断是否需要创建新的woker。如果添加worker成功，则会启动worker对应的线程，并将`execute`方法中传入的任务作为线程的第一个任务。如果当前线程池状态不允许再添加新的worker，则该函数返回false。执行逻辑如下：
 
@@ -144,7 +144,7 @@ public void run() {
 
 线程池中的线程是可以回收的，有两个控制变量`allowCoreThreadTimeOut`和`keepAliveTime`，接下来看看线程池是怎么控制线程的回收的。主要是`getTask`和`processWorkerExit`两个方法。
 
-##### getTask
+#### getTask
 
 getTask方法就是一个无限循环，退出有几种可能：  
 1. 线程池当前是退出状态，则直接返回null  
@@ -171,11 +171,15 @@ try {
 
 首先判断取任务时需要超时设置，如果配置了`allowCoreThreadTimeOut`或者当前线程数量大于配置的`corePoolSize`，则取任务时最多等待`keepAliveTime`，否则一直阻塞等待，成功取到任务则直接返回，否则此次循环超时，继续下一轮循环。`getTask`方法使用CAS避免加锁操作，提高线程池的并发性能。
 
-##### processWorkerExit
+#### processWorkerExit
 
 processWorkerExit方法是线程退出前执行的方法，执行完成之后，线程的run函数退出，整个线程退出。线程退出while循环，可能是正常退出，也可能是异常中断，所以需要分开处理。如果线程是正常退出，并且线程不够用，整个方法会调用`addWorker`补充线程。
 
-#### 参考  
+### 线程池的使用
+
+#### execute vs submit (TODO)
+
+### 参考  
 
 1. [线程池数据结构与线程构造方法](http://www.blogjava.net/xylz/archive/2011/01/18/343183.html)
 1. [ThreadPoolExecutor thread safe](http://stackoverflow.com/questions/1702386/is-threadpoolexecutor-thread-safe)
