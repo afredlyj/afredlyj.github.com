@@ -183,3 +183,7 @@ String str13 = "'\'')\"";
 >-x 选项
 
 来自[酷壳](http://coolshell.cn/articles/1379.html)
+
+* 查看指定java进程的线程数量
+
+>ps -eLF| grep -c [PID]
