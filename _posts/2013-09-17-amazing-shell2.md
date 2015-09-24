@@ -186,4 +186,14 @@ String str13 = "'\'')\"";
 
 * 查看指定java进程的线程数量
 
->ps -eLF| grep -c [PID]
+>ps -eLF \| grep -c [PID]
+
+ * 比较两个文件的不同
+
+ >comm
+逐行比较两个已排序文件的不同，选项比较少，只能比较一行的数据。
+
+>awk
+使用awk的内置变量`NR`和`FNR`，也可以比较两个文件的不同，并且选项更多，可以处理不同的需求。
+
+>awk -F'\t' 'NR==FNR{arr[$0]}NR>FNR{if ($3 in arr) print $0}'  imei loginStat.0.log | tee result.txt
