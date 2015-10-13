@@ -197,3 +197,41 @@ String str13 = "'\'')\"";
 使用awk的内置变量`NR`和`FNR`，也可以比较两个文件的不同，并且选项更多，可以处理不同的需求。
 
 >awk -F'\t' 'NR==FNR{arr[$0]}NR>FNR{if ($3 in arr) print $0}'  imei loginStat.0.log | tee result.txt
+
+**crontab定时任务**
+
+Linux可以通过crond服务执行定时任务，而具体的任务设定需要修改crontab。
+
+```
+usage:  crontab [-u user] file
+        crontab [-u user] [ -e | -l | -r ]
+                (default operation is replace, per 1003.2)
+        -e      (edit user's crontab)
+        -l      (list user's crontab)
+        -r      (delete user's crontab)
+        -i      (prompt before deleting user's crontab)
+        -s      (selinux context)
+```
+
+crontab的书写规则：
+
+><minute> <hour> <day> <month> <dow> <command>
+第1列      第2列   3       4       5      6
+第1列表示分钟1～59 每分钟用*或者 */1表示
+第2列表示小时1～23（0表示0点）
+第3列表示日期1～31
+第4列表示月份1～12
+第5列标识号星期0～6（0表示星期天）
+第6列要运行的命令
+
+需要注意的是，`%`在crontab中是换行符，所以如果执行命令中有`%`，需要用`\`来escape才行。比如在crontab中需要使用`date`命令：
+
+```
+*/2 * * * * /var/job/show-busy-java-threads.sh -p 2873 -c 10 >> /var/job/"cpuStat2873-"$(date +\%Y\%m\%\d\%H\%M\%S) 2>&1
+```
+
+另外，如果命令是执行一个脚本，需要在脚本中明确引用环境变量比如：
+
+```
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/games:/usr/local/jdk/bin:/usr/local/mysql/bin
+```
