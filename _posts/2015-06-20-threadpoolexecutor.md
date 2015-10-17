@@ -177,7 +177,89 @@ processWorkerExit方法是线程退出前执行的方法，执行完成之后，
 
 ### 线程池的使用
 
-#### execute vs submit (TODO)
+#### execute vs submit
+
+`execute`和`submit`都能提交任务。虽然`submit`最后也是通过调用`execute`实现任务提交，但是还是有如下几个区别：
+1. `execute`方法只能接收`Runnable`作为参数，而`submit`除了接收`Runnable`，还可以接收`Callable`；
+2. 一个任务通过`execute`方法提交到线程池后，如果抛出RuntimeException，整个Worker会退出，同时会调用UncaughtExceptionHandler处理异常，线程池的执行最后都会交给Worker对象，所以参考一下Worker源码：
+
+~~~~
+
+    final void runWorker(Worker w) {
+        Thread wt = Thread.currentThread();
+        Runnable task = w.firstTask;
+        w.firstTask = null;
+        w.unlock(); // allow interrupts
+        boolean completedAbruptly = true;
+        try {
+            while (task != null || (task = getTask()) != null) {
+                w.lock();
+                // If pool is stopping, ensure thread is interrupted;
+                // if not, ensure thread is not interrupted.  This
+                // requires a recheck in second case to deal with
+                // shutdownNow race while clearing interrupt
+                if ((runStateAtLeast(ctl.get(), STOP) ||
+                     (Thread.interrupted() &&
+                      runStateAtLeast(ctl.get(), STOP))) &&
+                    !wt.isInterrupted())
+                    wt.interrupt();
+                try {
+                    beforeExecute(wt, task);
+                    Throwable thrown = null;
+                    try {
+                    	// 1
+                        task.run();
+                    } catch (RuntimeException x) {
+                        thrown = x; throw x;
+                    } catch (Error x) {
+                        thrown = x; throw x;
+                    } catch (Throwable x) {
+                        thrown = x; throw new Error(x);
+                    } finally {
+                        afterExecute(task, thrown);
+                    }
+                } finally {
+                    task = null;
+                    w.completedTasks++;
+                    w.unlock();
+                }
+            }
+            completedAbruptly = false;
+        } finally {
+            processWorkerExit(w, completedAbruptly);
+        }
+    }
+
+~~~~
+
+在注释1处，task就是通过`execute`传入的Runnable对象。`submit`调用`execute`提交任务，所以任务执行逻辑和`execute`一致，区别在于调用`execute`之前，`submit`会将提交的task封装成`FutureTask`，然后在把这个`FutureTask`提交到线程池，所以通过`submit`提交的任务，注释1处是一个FutureTask对象，接下来看一下`FutureTask`对象的run方法：
+
+~~~~
+
+                try {
+                    result = c.call();
+                    ran = true;
+                } catch (Throwable ex) {
+                    result = null;
+                    ran = false;
+                    setException(ex);
+                }
+~~~~
+
+`FutureTask`直接把异常吞了，所以`submit`的任务，即使有异常，Worker也不会退出，如果要获取到这个异常，调用`FutureTask#get`方法：
+
+~~~~
+
+    private V report(int s) throws ExecutionException {
+        Object x = outcome;
+        if (s == NORMAL)
+            return (V)x;
+        if (s >= CANCELLED)
+            throw new CancellationException();
+        throw new ExecutionException((Throwable)x);
+    }
+
+~~~~
 
 ### 参考  
 
