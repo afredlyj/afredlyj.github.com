@@ -122,7 +122,7 @@ Hotspot认为没有引用的对象是消亡对象（引用可以分为四种）�
 
 实际的晋升阈值是内部计算的结果，而最大晋升阈值可以通过参数`-XX:MaxTeuringThreshold=<N>`设置，适当调整最大晋升阈值，可以减少不必要的开销，比如`From Survivor`和`To Surivivor`不必要的对象复制。另外，可以通过`-XX:+PrintTeuringDistribution`观察各个年龄段的分布情况。示例如下：  
 
-```java  
+~~~~   
 2015-10-25T08:32:44.057+0800: 754776.883: [GC2015-10-25T08:32:44.057+0800: 754776.883: [ParNew
 Desired survivor size 89456640 bytes, new threshold 15 (max 15)
 - age   1:       2728 bytes,       2728 total
@@ -141,7 +141,8 @@ Desired survivor size 89456640 bytes, new threshold 15 (max 15)
 - age  14:      20664 bytes,    2390408 total
 - age  15:      25896 bytes,    2416304 total
 : 5353K->3477K(349568K), 0.3519480 secs] 1210163K->1209377K(1922432K), 0.3525660 secs] [Times: user=1.92 sys=0.02, real=0.35 secs]
-```  
+~~~~
+
 `Desired survivor size`是Survivor的空间大小乘以目标存活率得到的空间大小。`max 15`表示最大晋升阈值，`new threshold 15`表示内部计算的阈值。每个年龄的数据分布：第一个字段表示年龄，第二个字段表示当前年龄占用的空间大小，第三个表示总大小，是该年龄及其之前所有行对象大小的年龄之和。
 
 通常来说，如果观察到的晋升阈值持续小于最大晋升阈值，或者Survivor的空间大小小于总的存活对象大小（最后最右列的值），都表明Survivor空间过小。
