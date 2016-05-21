@@ -1,39 +1,39 @@
 ---
 layout: post
-title: LinkedHashMap Ô´Âë·ÖÎö
+title: LinkedHashMap æºç åˆ†æ
 category: program
 ---
 
-ÔÚJavaÖĞ£¬HashMapÊÇÎŞĞòµÄ£¬¶øLinkedHashMapºÍTreeMapÓĞĞò£¬±¾Æª¾ÍÀ´·ÖÎöÒ»ÏÂLinkedHashMapµÄÔ´Âë¡£LinkedHashMapÊÇHashMapµÄ×ÓÀà£¬¿ÉÒÔÔÚ¹¹Ôìº¯ÊıÖĞÅäÖÃ`accessOrder`Éè¶¨·ÃÎÊÓĞĞò»ò²åÈëÓĞĞò¡£ÒÔÏÂ·ÖÎö¶¼ÊÇ»ùÓÚjdk1.7.0_51·ÖÎöµÃÀ´¡£
+åœ¨Javaä¸­ï¼ŒHashMapæ˜¯æ— åºçš„ï¼Œè€ŒLinkedHashMapå’ŒTreeMapæœ‰åºï¼Œæœ¬ç¯‡å°±æ¥åˆ†æä¸€ä¸‹LinkedHashMapçš„æºç ã€‚LinkedHashMapæ˜¯HashMapçš„å­ç±»ï¼Œå¯ä»¥åœ¨æ„é€ å‡½æ•°ä¸­é…ç½®`accessOrder`è®¾å®šè®¿é—®æœ‰åºæˆ–æ’å…¥æœ‰åºã€‚ä»¥ä¸‹åˆ†æéƒ½æ˜¯åŸºäºjdk1.7.0_51åˆ†æå¾—æ¥ã€‚
 
-ÏÈ¿´ÀàµÄ¶¨Òå£º
+å…ˆçœ‹ç±»çš„å®šä¹‰ï¼š
 ```java
 public class LinkedHashMap<K,V>
     extends HashMap<K,V>
     implements Map<K,V> {
-    // Ë«ÏòÁ´±íµÄÍ·½áµã
+    // åŒå‘é“¾è¡¨çš„å¤´ç»“ç‚¹
 	private transient Entry<K,V> header;
-	// Ö¸¶¨¸ÃLinkedHashMapÊÇ·ñ°´ÕÕ·ÃÎÊÅÅĞò£¬·ñÔò°´ÕÕ²åÈëÅÅĞò£¬×¢Òâ¸ÃÊôĞÔÎªfinal£¬Ä¬ÈÏÎªfalse
+	// æŒ‡å®šè¯¥LinkedHashMapæ˜¯å¦æŒ‰ç…§è®¿é—®æ’åºï¼Œå¦åˆ™æŒ‰ç…§æ’å…¥æ’åºï¼Œæ³¨æ„è¯¥å±æ€§ä¸ºfinalï¼Œé»˜è®¤ä¸ºfalse
 	private final boolean accessOrder;
 
 	@Override
     void init() {
-		 // ³õÊ¼»¯´úÂë
+		 // åˆå§‹åŒ–ä»£ç 
 	     // ... 
     }
     
     @Override
     void transfer(HashMap.Entry[] newTable, boolean rehash) {
-	    // ¾ßÌå´úÂë¼ûÏÂÎÄ
+	    // å…·ä½“ä»£ç è§ä¸‹æ–‡
         // ...
     }
 }
 ```
 
-`LinkedHashMap`ÊÇ`HashMap`µÄ×ÓÀà£¬ÖØĞ´ÁË`init`ºÍ`transfer`·½·¨¡£
+`LinkedHashMap`æ˜¯`HashMap`çš„å­ç±»ï¼Œé‡å†™äº†`init`å’Œ`transfer`æ–¹æ³•ã€‚
 
-### init ·½·¨
-Ç°ÕßÓÃÓÚHashMapµÄ³õÊ¼»¯£¬ÓÉ¸¸ÀàµÄ¹¹Ôìº¯Êıµ÷ÓÃ£º
+### init æ–¹æ³•
+å‰è€…ç”¨äºHashMapçš„åˆå§‹åŒ–ï¼Œç”±çˆ¶ç±»çš„æ„é€ å‡½æ•°è°ƒç”¨ï¼š
 
 ```java
 // HashMap.java
@@ -55,17 +55,17 @@ public class LinkedHashMap<K,V>
 // LinkedHashMap.java
 	@Override
     void init() {
-		 // ³õÊ¼»¯´úÂë
+		 // åˆå§‹åŒ–ä»£ç 
         header = new Entry<>(-1, null, null, null);
         header.before = header.after = header;
     }
 ```
 
-³õÊ¼»¯Ê±´´½¨Ë«ÏòÁ´±íµÄÍ·½áµã¡£
+åˆå§‹åŒ–æ—¶åˆ›å»ºåŒå‘é“¾è¡¨çš„å¤´ç»“ç‚¹ã€‚
 
-### transfer ·½·¨
+### transfer æ–¹æ³•
 
-transfer·½·¨ÔÚHashMap rehashµÄÊ±ºòµ÷ÓÃ£¬ÓÃÓÚ½«bucketÖĞµÄÊı¾İ×ªÒÆµ½ĞÂµÄÊı×éÖĞ¡£
+transferæ–¹æ³•åœ¨HashMap rehashçš„æ—¶å€™è°ƒç”¨ï¼Œç”¨äºå°†bucketä¸­çš„æ•°æ®è½¬ç§»åˆ°æ–°çš„æ•°ç»„ä¸­ã€‚
 
 ```java
 // LinkedHashMap.java
@@ -99,14 +99,14 @@ transfer·½·¨ÔÚHashMap rehashµÄÊ±ºòµ÷ÓÃ£¬ÓÃÓÚ½«bucketÖĞµÄÊı¾İ×ªÒÆµ½ĞÂµÄÊı×éÖĞ¡£
     }
 ```
 
-¸¸ÀàHashMapµÄtransfer¹ı³Ì±È½Ï¼òµ¥£º
-1. ±éÀúËùÓĞµÄ½áµã£»
-2. ÖØĞÂ¼ÆËã½áµãµÄÊı×éindex£¬È»ºó½«¸Ã½áµã²åÈëµ½bucket listµÄÍ·½áµãÎ»ÖÃ¡£
-¶ø×ÓÀàLinkedHashMap transferº¯Êı¹ØÏµµ½header£¬Ê¹ÓÃË«ÏòÁ´±í±éÀú£¬Õâ¶Î´úÂëĞèÒªÏÈ·ÖÎögetºÍput·½·¨¡£
+çˆ¶ç±»HashMapçš„transferè¿‡ç¨‹æ¯”è¾ƒç®€å•ï¼š
+1. éå†æ‰€æœ‰çš„ç»“ç‚¹ï¼›
+2. é‡æ–°è®¡ç®—ç»“ç‚¹çš„æ•°ç»„indexï¼Œç„¶åå°†è¯¥ç»“ç‚¹æ’å…¥åˆ°bucket listçš„å¤´ç»“ç‚¹ä½ç½®ã€‚
+è€Œå­ç±»LinkedHashMap transferå‡½æ•°å…³ç³»åˆ°headerï¼Œä½¿ç”¨åŒå‘é“¾è¡¨éå†ï¼Œè¿™æ®µä»£ç éœ€è¦å…ˆåˆ†ægetå’Œputæ–¹æ³•ã€‚
 
-### get·½·¨
+### getæ–¹æ³•
 
-ºÍHashMapÒ»Ñù£¬LinkedHashMapµÄkeyºÍvalue¶¼¿ÉÒÔÎªnull£¬µ±È¡³ökey¶ÔÓ¦µÄvalueÎªnullÊ±£¬¿ÉÄÜ±íÊ¾key²»´æÔÚ£¬»òÕß¸ÃkeyµÄÖµÎªnull£¬ÕâÁ½ÖÖÇé¿ö¿ÉÒÔÍ¨¹ı`containsKey`Çø·Ö¡£
+å’ŒHashMapä¸€æ ·ï¼ŒLinkedHashMapçš„keyå’Œvalueéƒ½å¯ä»¥ä¸ºnullï¼Œå½“å–å‡ºkeyå¯¹åº”çš„valueä¸ºnullæ—¶ï¼Œå¯èƒ½è¡¨ç¤ºkeyä¸å­˜åœ¨ï¼Œæˆ–è€…è¯¥keyçš„å€¼ä¸ºnullï¼Œè¿™ä¸¤ç§æƒ…å†µå¯ä»¥é€šè¿‡`containsKey`åŒºåˆ†ã€‚
 
 ```java
 // LinkedHashMap
@@ -129,21 +129,21 @@ transfer·½·¨ÔÚHashMap rehashµÄÊ±ºòµ÷ÓÃ£¬ÓÃÓÚ½«bucketÖĞµÄÊı¾İ×ªÒÆµ½ĞÂµÄÊı×éÖĞ¡£
     }
 ```
 
-Èç¹û`accessOrder`Îª`true`£¬¼´°´ÕÕ·ÃÎÊÅÅĞò£¬Ôò°ÑEntry´Óµ±Ç°Î»ÖÃÉ¾³ı£¬²¢²åÈëµ½Í·½áµãÖĞ¡£LinkedHashMapÖĞµÄEntry¶¨ÒåÈçÏÂ£º
+å¦‚æœ`accessOrder`ä¸º`true`ï¼Œå³æŒ‰ç…§è®¿é—®æ’åºï¼Œåˆ™æŠŠEntryä»å½“å‰ä½ç½®åˆ é™¤ï¼Œå¹¶æ’å…¥åˆ°å¤´ç»“ç‚¹ä¸­ã€‚LinkedHashMapä¸­çš„Entryå®šä¹‰å¦‚ä¸‹ï¼š
 
 ```java
 private static class Entry<K,V> extends HashMap.Entry<K,V> {
-	// Ë«ÏòÁ´±íÖĞÖ¸Ïò±¾½áµãÇ°ºóÁ½¸ö½áµãµÄÒıÓÃ
-	// ËùÒÔEntry°üº¬ÁËÈı¸öÒıÓÃ£¨HashMap.EntryµÄnextÒıÓÃ£©
+	// åŒå‘é“¾è¡¨ä¸­æŒ‡å‘æœ¬ç»“ç‚¹å‰åä¸¤ä¸ªç»“ç‚¹çš„å¼•ç”¨
+	// æ‰€ä»¥EntryåŒ…å«äº†ä¸‰ä¸ªå¼•ç”¨ï¼ˆHashMap.Entryçš„nextå¼•ç”¨ï¼‰
 	Entry<K,V> before, after;
 
-	// ´ÓË«ÏòÁ´±íÖĞÉ¾³ıµ±Ç°Entry
+	// ä»åŒå‘é“¾è¡¨ä¸­åˆ é™¤å½“å‰Entry
 	 private void remove() {
 	     before.after = after;
          after.before = before;
 	  }
 
-	// ½«µ±Ç°Entry½áµã²åÈëexistingEntry½áµãÖ®Ç°
+	// å°†å½“å‰Entryç»“ç‚¹æ’å…¥existingEntryç»“ç‚¹ä¹‹å‰
 	private void addBefore(Entry<K,V> existingEntry) {
         after  = existingEntry;
         before = existingEntry.before;
@@ -153,11 +153,11 @@ private static class Entry<K,V> extends HashMap.Entry<K,V> {
 }
 ```
 
-ÔÚ»Øµ½`recordAccess`·½·¨£¬µ±`accessOrder`Îª`true`Ê±£¬get·½·¨µÄµ÷ÓÃ¾ÍÒ»Ä¿ÁËÈ»ÁË¡£
+åœ¨å›åˆ°`recordAccess`æ–¹æ³•ï¼Œå½“`accessOrder`ä¸º`true`æ—¶ï¼Œgetæ–¹æ³•çš„è°ƒç”¨å°±ä¸€ç›®äº†ç„¶äº†ã€‚
 
-### put ·½·¨
+### put æ–¹æ³•
 
-put·½·¨±Èget·½·¨Òª¸´ÔÓ£¬Ïà±ÈHashMap£¬¶àÁËÁ½¸öº¯Êıµ÷ÓÃ£º
+putæ–¹æ³•æ¯”getæ–¹æ³•è¦å¤æ‚ï¼Œç›¸æ¯”HashMapï¼Œå¤šäº†ä¸¤ä¸ªå‡½æ•°è°ƒç”¨ï¼š
 
 ```java
 // HashMap.java
@@ -174,7 +174,7 @@ put·½·¨±Èget·½·¨Òª¸´ÔÓ£¬Ïà±ÈHashMap£¬¶àÁËÁ½¸öº¯Êıµ÷ÓÃ£º
             if (e.hash == hash && ((k = e.key) == key || key.equals(k))) {
                 V oldValue = e.value;
                 e.value = value;
-                // Èç¹ûaccessOrderÎªtrue£¬Ôò»á½«¸Ã½áµã²åÈëµ½Í·½áµãÎ»ÖÃ
+                // å¦‚æœaccessOrderä¸ºtrueï¼Œåˆ™ä¼šå°†è¯¥ç»“ç‚¹æ’å…¥åˆ°å¤´ç»“ç‚¹ä½ç½®
                 e.recordAccess(this);
                 return oldValue;
             }
@@ -198,13 +198,13 @@ put·½·¨±Èget·½·¨Òª¸´ÔÓ£¬Ïà±ÈHashMap£¬¶àÁËÁ½¸öº¯Êıµ÷ÓÃ£º
     }
 ```
 
-×ÓÀàÖØĞ´ÁË`addEntry`·½·¨£¬³ıÁËÖ´ĞĞ¸¸Àà·½·¨ÖĞµÄÔ­ÓĞÂß¼­£¬»¹»áÅĞ¶ÏÊÇ·ñĞèÒªÉ¾³ıEntry¡£`super.addEntry`½«µ±Ç°key-valueÌí¼Óµ½EntryÊı×éÖĞ£¬Èç¹û¿Õ¼äÓĞÊ£Óà£¬Ôòµ÷ÓÃ`createEntry`Ìí¼ÓEntry£¬ºÍ¸¸Àà²»Í¬µÄÊÇ£¬×ÓÀà×îºó»á½«¸Ã½áµãÌí¼Óµ½Ë«Ïò¶ÓÁĞµÄÍ·½áµãÎ»ÖÃ¡£µ±ÈİÁ¿²»×ãÊ±£¬Ö´ĞĞrehash²Ù×÷£¬ËùÒÔ£¬ÕâÀï»Øµ½ÁËÉÏÎÄÖĞµÄ`transfer`·½·¨£º
-1. ÀûÓÃË«ÏòÁ´±í±éÀúÕû¸öEntryÊı×é£»
-2. ±éÀú¹ı³ÌÖĞ¸ù¾İĞÂµÄEntryÊı×é£¬ÖØĞÂ¼ÆËãÃ¿¸ö½áµãµÄindex£¬ÉèÖÃbucketÁ´±í£»
-3. Ë«ÏòÁ´±íµÄ½á¹¹²¢²»ĞèÒª±ä»¯¡£
-ÓÉ´Ë¿ÉÒÔ¿´µ½£¬LinkedHashMapºÍHashMap rehashµÄÇø±ğÔÚÓÚ£¬Ç°ÕßÍ¨¹ıË«ÏòÁ´±í¼´¿ÉÍê³É±éÀú²Ù×÷£¬¶øºóÕßĞèÒª±éÀúEntryÊı×éÖĞµÄEntry£¬Ò²¾ÍÊÇÖğ¸ö±éÀúbucket¡£
+å­ç±»é‡å†™äº†`addEntry`æ–¹æ³•ï¼Œé™¤äº†æ‰§è¡Œçˆ¶ç±»æ–¹æ³•ä¸­çš„åŸæœ‰é€»è¾‘ï¼Œè¿˜ä¼šåˆ¤æ–­æ˜¯å¦éœ€è¦åˆ é™¤Entryã€‚`super.addEntry`å°†å½“å‰key-valueæ·»åŠ åˆ°Entryæ•°ç»„ä¸­ï¼Œå¦‚æœç©ºé—´æœ‰å‰©ä½™ï¼Œåˆ™è°ƒç”¨`createEntry`æ·»åŠ Entryï¼Œå’Œçˆ¶ç±»ä¸åŒçš„æ˜¯ï¼Œå­ç±»æœ€åä¼šå°†è¯¥ç»“ç‚¹æ·»åŠ åˆ°åŒå‘é˜Ÿåˆ—çš„å¤´ç»“ç‚¹ä½ç½®ã€‚å½“å®¹é‡ä¸è¶³æ—¶ï¼Œæ‰§è¡Œrehashæ“ä½œï¼Œæ‰€ä»¥ï¼Œè¿™é‡Œå›åˆ°äº†ä¸Šæ–‡ä¸­çš„`transfer`æ–¹æ³•ï¼š
+1. åˆ©ç”¨åŒå‘é“¾è¡¨éå†æ•´ä¸ªEntryæ•°ç»„ï¼›
+2. éå†è¿‡ç¨‹ä¸­æ ¹æ®æ–°çš„Entryæ•°ç»„ï¼Œé‡æ–°è®¡ç®—æ¯ä¸ªç»“ç‚¹çš„indexï¼Œè®¾ç½®bucketé“¾è¡¨ï¼›
+3. åŒå‘é“¾è¡¨çš„ç»“æ„å¹¶ä¸éœ€è¦å˜åŒ–ã€‚
+ç”±æ­¤å¯ä»¥çœ‹åˆ°ï¼ŒLinkedHashMapå’ŒHashMap rehashçš„åŒºåˆ«åœ¨äºï¼Œå‰è€…é€šè¿‡åŒå‘é“¾è¡¨å³å¯å®Œæˆéå†æ“ä½œï¼Œè€Œåè€…éœ€è¦éå†Entryæ•°ç»„ä¸­çš„Entryï¼Œä¹Ÿå°±æ˜¯é€ä¸ªéå†bucketã€‚
 
-·ÖÎöÍêrehashÁ÷³Ì£¬¼ÌĞø¿´`addEntry`£¬ÔÚÍê³É½áµãÌí¼ÓÖ®ºó£¬LinkedHashMap»áÅĞ¶ÏÊÇ·ñĞèÒªÉ¾³ı×îÀÏµÄEntry£¬Èç¹ûÊÇ£¬Ôò»áÖ´ĞĞÉ¾³ı²Ù×÷£¬Õâ¶Î´úÂë£¬¿ÉÒÔÓÃÀ´ÊµÏÖLRU¡£
+åˆ†æå®Œrehashæµç¨‹ï¼Œç»§ç»­çœ‹`addEntry`ï¼Œåœ¨å®Œæˆç»“ç‚¹æ·»åŠ ä¹‹åï¼ŒLinkedHashMapä¼šåˆ¤æ–­æ˜¯å¦éœ€è¦åˆ é™¤æœ€è€çš„Entryï¼Œå¦‚æœæ˜¯ï¼Œåˆ™ä¼šæ‰§è¡Œåˆ é™¤æ“ä½œï¼Œè¿™æ®µä»£ç ï¼Œå¯ä»¥ç”¨æ¥å®ç°LRUã€‚
 
 
 
