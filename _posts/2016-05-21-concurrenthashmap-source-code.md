@@ -10,9 +10,11 @@ category: program
 从字面理解，`ConcurrentHashMap`是支持并发的Map，这是与`HashMap`最本质的区别，后者在多线程中`resize`方法会出现无限循环，从而导致CPU 100%的问题，解决这个问题的办法，要么使用`HashTable`，要么使用`ConcurrentHashMap`。相比`HashTable`，本文的主角效率上会优秀很多，因为采用分段锁的机制，配合哈希算法，保证数据尽可能离散分布，减少锁的竞争，从而提升效率。
 
 想要说明分段锁，需要借用两张图：
+
 ![图片无法显示](../assets/images/concurrenthashmap1.png "")  
 
 第一张是类图，`ConcurrentHashMap`实现了`ConcurrentMap`接口（图中没有体现），定义了如下四个方法，都是原子性的：
+
 ```java
 // 如果key不存在，则将key和value关联，否则返回key对应的value
 V putIfAbsent(K key, V value);
@@ -28,6 +30,7 @@ V replace(K key, V value);
 ```
 
 如果不能从上图中看出整个Map的存储结构，下图则表现得更加明显：
+
 ![图片无法显示](../assets/images/concurrenthashmap3.png "")  
 
 Map中默认包含16个Segment数组，每个Segment数组是一个Hash 表，Hash表的结构和`HashMap`中的类似。从上图所知定位一个元素，需要两次Hash操作，第一次Hash定位到Segment，第二次Hash定位到元素所在链表的头部，所以其Hash过程要比普通的HashMap要长，但正是由于这种结构，使得写入时只需要对写入对应的Segment加锁，提供了并发效率。

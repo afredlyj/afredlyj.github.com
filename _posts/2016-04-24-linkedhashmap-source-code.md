@@ -7,6 +7,7 @@ category: program
 在Java中，HashMap是无序的，而LinkedHashMap和TreeMap有序，本篇就来分析一下LinkedHashMap的源码。LinkedHashMap是HashMap的子类，可以在构造函数中配置`accessOrder`设定访问有序或插入有序。以下分析都是基于jdk1.7.0_51分析得来。
 
 先看类的定义：
+
 ```java
 public class LinkedHashMap<K,V>
     extends HashMap<K,V>
