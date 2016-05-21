@@ -11,7 +11,7 @@ category: program
 
 想要说明分段锁，需要借用两张图：
 
-![图片无法显示](../assets/images/concurrenthashmap1.png "异常信息")  
+![图片无法显示](../assets/images/concurrenthashmap1.jpg "异常信息")  
 
 第一张是类图，`ConcurrentHashMap`实现了`ConcurrentMap`接口（图中没有体现），定义了如下四个方法，都是原子性的：
 
@@ -31,7 +31,7 @@ V replace(K key, V value);
 
 如果不能从上图中看出整个Map的存储结构，下图则表现得更加明显：
 
-![图片无法显示](../assets/images/concurrenthashmap3.png "异常信息")  
+![图片无法显示](../assets/images/concurrenthashmap3.jpg "异常信息")  
 
 Map中默认包含16个Segment数组，每个Segment数组是一个Hash 表，Hash表的结构和`HashMap`中的类似。从上图所知定位一个元素，需要两次Hash操作，第一次Hash定位到Segment，第二次Hash定位到元素所在链表的头部，所以其Hash过程要比普通的HashMap要长，但正是由于这种结构，使得写入时只需要对写入对应的Segment加锁，提供了并发效率。
 
