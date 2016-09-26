@@ -11,8 +11,8 @@ category: program
 
 ~~~~
 
-java.lang.NoClassDefFoundError: Could not initialize class com.nearme.sso.SsoManager
-        at com.nearme.dubbo.impl.SsoDubboImpl.transferSso(SsoDubboImpl.java:40) ~[Authentication.20150414.jar:na]
+java.lang.NoClassDefFoundError: Could not initialize class com.x.x.XManager
+        at com.x.dubbo.impl.XDubboImpl.transferSso(XDubboImpl.java:40) ~[YYY.20150414.jar:na]
         at com.alibaba.dubbo.common.bytecode.Wrapper1.invokeMethod(Wrapper1.java) ~[na:2.5.3]
         at com.alibaba.dubbo.rpc.proxy.javassist.JavassistProxyFactory$1.doInvoke(JavassistProxyFactory.java:46) ~[dubbo-2.5.3.jar:2.5.3]
         at com.alibaba.dubbo.rpc.proxy.AbstractProxyInvoker.invoke(AbstractProxyInvoker.java:72) ~[dubbo-2.5.3.jar:2.5.3]
@@ -46,9 +46,9 @@ The searched-for class definition existed when the currently executing class was
 
 两者的区别在于，后者是缺少.class文件，比如缺少依赖的jar包，而前者并不缺少依赖包，只是找不到类定义，如果出现程序包了后面的异常，一般需要检查类的初始化部分，比如类属性定义和static代码块，如果找不到问题，建议在类初始化代码块中添加try-catch，并将异常打印出来，这样定位问题就简单一些。
 
-ok，分析之后就是证实，经过查看代码，确认线上的`SsoManager`类有static代码块，加上try-catch之后放到线上，并放少量流量，查看日志发现几个问题：
+ok，分析之后就是证实，经过查看代码，确认线上的`XManager`类有static代码块，加上try-catch之后放到线上，并放少量流量，查看日志发现几个问题：
 
-1. SsoManager提供静态方法，它的属性都是静态变量；
+1. XManager提供静态方法，它的属性都是静态变量；
 2. 属性在static代码块中初始化；
 3. 属性的初始化依赖由Spring加载的context。
 
