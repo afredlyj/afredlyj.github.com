@@ -54,7 +54,7 @@ ok，分析之后就是证实，经过查看代码，确认线上的`XManager`�
 
 服务启动运行main方法，main函数启动dubbo服务，能接收rpc服务，Spring加载bean，提供netty服务，由于主线程Spring初始化比较慢，导致rpc请求到达时，部分bean没有完成初始化context为空，从而导致static初始化失败，最后导致事故。
 
-找到事故原因，处理起来就比较简单了，选了一种简单易行的办法，将SsoManager改为单例，并有Spring管理，依赖的属性交由Spring注入，这样就能解决这个问题。
+找到事故原因，处理起来就比较简单了，选了一种简单易行的办法，将XManager改为单例，并有Spring管理，依赖的属性交由Spring注入，这样就能解决这个问题。
 
 #### 复现
 
