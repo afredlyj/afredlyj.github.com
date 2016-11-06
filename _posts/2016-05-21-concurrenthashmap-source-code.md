@@ -184,3 +184,4 @@ put方法会在加入新的HashEntry前，判断是否需要rehash，而HashMap�
 * http://goldendoc.iteye.com/blog/1103980
 * https://www.ibm.com/developerworks/cn/java/java-lo-concurrenthashmap/
 * http://brokendreams.iteye.com/blog/2253345
+* http://www.iteye.com/topic/344876
