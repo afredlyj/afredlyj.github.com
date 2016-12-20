@@ -4,8 +4,6 @@ title: PropertySourcesPlaceholderConfigurer源码分析
 category: program
 ---
 
-### PropertySourcesPlaceholderConfigurer源码分析
-
 在程序编码时，为了增加程序灵活度，配置数据一般都不会硬编码到代码中，而是在程序启动时，从配置中心获取，配置中心是一个统一管理系统配置的服务，项目不大时，配置中心可以是一个简单的配置文件，随着项目逐步状态，配置中心可以单独成为一个系统。
 
 这里通过分析Spring的源码，看看最简单的文件配置，在Spring中是怎么实习的。
