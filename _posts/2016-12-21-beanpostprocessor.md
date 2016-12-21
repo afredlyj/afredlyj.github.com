@@ -170,3 +170,5 @@ public Object postProcessAfterInitialization(Object bean, String beanName) throw
 参考文档：http://jinnianshilongnian.iteye.com/blog/1492424
 
 // TODO
+
+参考文档：http://www.cnphp6.com/archives/85639
