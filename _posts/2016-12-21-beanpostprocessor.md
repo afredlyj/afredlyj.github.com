@@ -167,8 +167,9 @@ public Object postProcessAfterInitialization(Object bean, String beanName) throw
 
 执行完`wrapIfNecessary`之后，`BeanNameAutoProxyCreator`就返回目标对象的代理对象，代理对象的生成逻辑这里就不再分析，生成的代理对象beanName和目标对象一致，之后业务代码调用的就是生成的代理对象。
 
-参考文档：http://jinnianshilongnian.iteye.com/blog/1492424
-
 // TODO
 
-参考文档：http://www.cnphp6.com/archives/85639
+参考文档：
+http://www.cnphp6.com/archives/85639
+http://www.iteye.com/topic/1122859
+http://jinnianshilongnian.iteye.com/blog/1492424
