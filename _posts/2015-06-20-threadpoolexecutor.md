@@ -265,3 +265,6 @@ processWorkerExit方法是线程退出前执行的方法，执行完成之后，
 
 1. [线程池数据结构与线程构造方法](http://www.blogjava.net/xylz/archive/2011/01/18/343183.html)
 1. [ThreadPoolExecutor thread safe](http://stackoverflow.com/questions/1702386/is-threadpoolexecutor-thread-safe)
+2. http://brokendreams.iteye.com/blog/2252344
+3. http://www.cnblogs.com/zhanjindong/p/java-concurrent-package-ThreadPoolExecutor.html
+4. http://www.idouba.net/sync-implementation-by-aqs/
