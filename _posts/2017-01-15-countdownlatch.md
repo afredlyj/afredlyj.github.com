@@ -4,6 +4,17 @@ title: CountDownLatch源码分析
 category: program
 ---
 
+`CountDownLatch`的javadoc是这么描述的：
+>A synchronization aid that allows one or more threads to wait until a set of operations being performed in other threads completes.
+>
+A CountDownLatch is initialized with a given count. The await methods block until the current count reaches zero due to invocations of the countDown() method, after which all waiting threads are released and any subsequent invocations of await return immediately. This is a one-shot phenomenon -- the count cannot be reset. If you need a version that resets the count, consider using a CyclicBarrier.
+>
+A CountDownLatch is a versatile synchronization tool and can be used for a number of purposes. A CountDownLatch initialized with a count of one serves as a simple on/off latch, or gate: all threads invoking await wait at the gate until it is opened by a thread invoking countDown(). A CountDownLatch initialized to N can be used to make one thread wait until N threads have completed some action, or some action has been completed N times.
+
+总的来说，CountDownLatch类似一扇门，多个线程需要在门外等候，只有当满足某个条件时，门才会打开，阻塞线程才能通过。需要注意的是，一旦门打开就不会被重置，所以CountDownLatch的效果是一次性的。
+
+CountDownLatch的一个常见场景是在编写多线程的测试用例时，需要等待多个线程执行完毕，测试主线程才能退出。
+
 ### AQS 简介
 
 在介绍`CountDownLatch`之前，需要对`AQS`的基本结构作一些简单说明。该类是`java.util.concurrent`包的核心类之一，是并发包中很多同步类的基础，核心思想是通过一个共享变量来同步状态，子类根据自己的需求实现`AQS`的模版方法，通过这种方式维护共享变量的状态，模版方法如下：
@@ -27,6 +38,23 @@ private transient volatile Node tail;
 ```
 
 AQS就介绍到这里，再继续讲会比较枯燥，所以结合子类CountDownLatch倒推AQS的实现会相对比较好理解，AQS的权威介绍在[这里](http://gee.cs.oswego.edu/dl/papers/aqs.pdf)，我看了一部分实在看不下去。
+
+### 构造函数
+
+```java
+    public CountDownLatch(int count) {
+        if (count < 0) throw new IllegalArgumentException("count < 0");
+        this.sync = new Sync(count);
+    }
+    
+     Sync(int count) {
+     
+            setState(count);
+        }
+
+```
+
+如上文所述，AQS的子类一般会作为内部类实现并发控制，在CountDownLatch中，计数器就是通过AQS的`state`变量实现，在初始化时需要指定一个正数作为计数器的初始值。
 
 ### await 方法
 
