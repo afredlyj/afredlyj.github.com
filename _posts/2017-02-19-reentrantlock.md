@@ -156,6 +156,104 @@ static final class NonfairSync extends Sync {
 }
 ```
 
+### exclusiveOwnerThread 修改不需要同步
+
+很奇怪的是，文档上明确指明`exclusiveOwnerThread`对象的修改不需要额外的同步：
+
+```java
+    /**
+     * Sets the thread that currently owns exclusive access. A
+     * <tt>null</tt> argument indicates that no thread owns access.
+     * This method does not otherwise impose any synchronization or
+     * <tt>volatile</tt> field accesses.
+     */
+    protected final void setExclusiveOwnerThread(Thread t) {
+        exclusiveOwnerThread = t;
+    }
+
+    /**
+     * Returns the thread last set by
+     * <tt>setExclusiveOwnerThread</tt>, or <tt>null</tt> if never
+     * set.  This method does not otherwise impose any synchronization
+     * or <tt>volatile</tt> field accesses.
+     * @return the owner thread
+     */
+    protected final Thread getExclusiveOwnerThread() {
+        return exclusiveOwnerThread;
+    }
+```
+
+以公平锁为例，`tryAcquire`和`tryRelease`都可能同时被多个线程调用，那就应该存在对`exclusiveOwnerThread`对象可见性的问题。为什么不需要加锁呢？
+在`tryAcquire`中，疑点代码是这句:
+
+```java
+ else if (current == getExclusiveOwnerThread()) {
+```
+
+如果线程A已经成功获取到排他锁，线程B尝试获取锁，进入`else-if`分支，是否存在可见性问题？
+
+此时调用`getExclusiveOwnerThread`可能会返回三种结果：线程A，线程B，null，如果返回线程B，那麻烦就大了，下面我看看会不会有这种可能。
+
+#### 返回线程A
+
+上面已经假设线程A已经获取到排他锁，所以返回线程A是正常情况，不需要继续分析。
+
+#### 返回线程B
+
+虽然线程A此时获取到排他锁，有可能线程B是上一个获取到排他锁的线程，下面着重分析这种情况，注意我们的假设是当前线程A已经成功获取到锁。也就是说线程B释放了锁：
+
+```java
+   protected final boolean tryRelease(int releases) {
+       int c = getState() - releases;
+       if (Thread.currentThread() != getExclusiveOwnerThread())
+           throw new IllegalMonitorStateException();
+           boolean free = false;
+           if (c == 0) {
+              free = true;
+              // 1. 共享变量写操作
+              setExclusiveOwnerThread(null);
+            }
+            // 2. volatile 变量写操作
+            setState(c);
+            return free;
+  }
+
+```
+
+根据`happens-before`法则的`程序次序法则`和`volatile变量法则`，结合以下代码：
+
+```java
+  protected final boolean tryAcquire(int acquires) {
+            final Thread current = Thread.currentThread();
+            // 3. volatile变量读操作
+            int c = getState();
+            if (c == 0) {
+                if (!hasQueuedPredecessors() &&
+                    compareAndSetState(0, acquires)) {
+                    // 5. 
+                    setExclusiveOwnerThread(current);
+                    return true;
+                }
+            }
+            // 4. 共享变量读操作
+            else if (current == getExclusiveOwnerThread()) {
+                int nextc = c + acquires;
+                if (nextc < 0)
+                    throw new Error("Maximum lock count exceeded");
+                setState(nextc);
+                return true;
+            }
+            return false;
+        }
+    }
+```
+
+我们就能发现，操作1`happens-before`操作4，所以操作4获取到的线程，可能为null，但是不会为线程B。
+
+#### 返回null
+如上分析，返回null是有可能的，但是条件判断不会成立，不影响整个锁的逻辑。
+
+
 ### 总结
 
 ReentrantLock定义了公平和非公平两种同步器，其中的state表示持有锁线程的重入次数，同时也通过state维持锁的互斥，如果state不为0，表示锁已经被线程持有，否则当前线程可以尝试获取锁。
