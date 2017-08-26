@@ -49,6 +49,7 @@ private static final Protocol refprotocol = ExtensionLoader.getExtensionLoader(P
 ```java
     private Map<String, Class<?>> loadExtensionClasses() {
         final SPI defaultAnnotation = type.getAnnotation(SPI.class);
+        // 加载默认实现
         if(defaultAnnotation != null) {
             String value = defaultAnnotation.value();
             if(value != null && (value = value.trim()).length() > 0) {
@@ -81,6 +82,7 @@ clazz.getConstructor(type);
 4. 如果`cachedAdaptiveClass`为空，则调用下面的方法，生成适配器类：		
 ```java
 private Class<?> createAdaptiveExtensionClass() {
+// 生成代码，不过有生成条件
         String code = createAdaptiveExtensionClassCode();
         ClassLoader classLoader = findClassLoader();
        // 获取Complier 扩展点的具体实现
@@ -234,7 +236,59 @@ public class AdaptiveCompiler implements Compiler {
 
 ```
 
-所以Compiler类，获取的扩展点实现类为`AdaptiveCompiler`。以上就是Dubbo扩展点实现的技术细节，`Protocol`、`Cluster`、`ProxyFactory`等扩展点的实现机制都是这样。
+所以Compiler类，获取的扩展点实现类为`AdaptiveCompiler`。
+扩展点还会返回包装类：
+
+1. 在`ExtensionLoader.loadFile`加载扩展点配置文件时，如果加载到的类有接口类型为参数的构造函数，则该类就是装饰类，缓存到`cachedWrapperClasses`中：  
+```java
+ clazz.getConstructor(type);
+ Set<Class<?>> wrappers = cachedWrapperClasses;
+if (wrappers == null) {
+	cachedWrapperClasses = new ConcurrentHashSet<Class<?>>();                                                        wrappers = cachedWrapperClasses;
+ }
+wrappers.add(clazz);
+```
+比如`ProtocolFilterWrapper`就是`Protocol`的装饰类：  
+```java
+  public ProtocolFilterWrapper(Protocol protocol){
+        if (protocol == null) {
+            throw new IllegalArgumentException("protocol == null");
+        }
+        this.protocol = protocol;
+    }
+```
+2. 装饰器类的实例化，在`ExtensionLoader#createExtension`方法中，如果当前扩展点key存在装饰器，则在创建并初始化扩展点对象之后（实现类似Spring 的IOC功能），循环遍历`cachedWrapperClasses`并初始化返回，也就是说，对于有装饰器的扩展点，返回的是装饰器对象。
+
+```java
+@SuppressWarnings("unchecked")
+    private T createExtension(String name) {
+        Class<?> clazz = getExtensionClasses().get(name);
+        if (clazz == null) {
+            throw findException(name);
+        }
+        try {
+            T instance = (T) EXTENSION_INSTANCES.get(clazz);
+            if (instance == null) {
+                EXTENSION_INSTANCES.putIfAbsent(clazz, (T) clazz.newInstance());
+                instance = (T) EXTENSION_INSTANCES.get(clazz);
+            }
+            injectExtension(instance);
+            Set<Class<?>> wrapperClasses = cachedWrapperClasses;
+            if (wrapperClasses != null && wrapperClasses.size() > 0) {
+                for (Class<?> wrapperClass : wrapperClasses) {
+                    instance = injectExtension((T) wrapperClass.getConstructor(type).newInstance(instance))c;
+                }
+            }
+            return instance;
+        } catch (Throwable t) {
+            throw new IllegalStateException("Extension instance(name: " + name + ", class: " +
+                    type + ")  could not be instantiated: " + t.getMessage(), t);
+        }
+    }
+
+```
+
+以上就是Dubbo扩展点实现的技术细节，`Protocol`、`Cluster`、`ProxyFactory`等扩展点的实现机制都是这样。
 
 还有`RegistryFactory`扩展类的代码，下文分析流程需要用到，所以一并贴出来：
 
