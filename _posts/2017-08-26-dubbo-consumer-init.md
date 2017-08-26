@@ -664,6 +664,7 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
         // cluster 也是扩展点类  Cluster$Adpative
         // 默认会调用FailoverCluster.join方法，生成FailoverClusterInvoker对象
         // 存疑：实际返回的是MockClusterInvoker对象
+        // 解答：由于定义了Cluster接口的装饰器类MockClusterWrapper，所以cluster.join实际上调用的是MockClusterInvoker#join方法，该方法返回MockClusterInvoker对象，MockClusterInvoker对象封装了FailoverCluster.join返回的FailoverClusterInvoker对象。
         return cluster.join(directory);
     }
 ```
@@ -671,17 +672,18 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
 `invoker`是dubbo中一个很重要的组件，封装了Provider地址及Service接口信息。生成invoker后，接下来看看怎样生成代理：
 
 ```java
+// 注意，在我分析的这篇文章中，到目前为止invoker是MockClusterInvoker对象。
         return (T) proxyFactory.getProxy(invoker);
 ```
 
 这里的`proxyFactory`为com.alibaba.dubbo.rpc.proxy.javassist.JavassistProxyFactory，顺着该类的源码，就能找到代理生成的流程，这里不再详述。
 
 综上所诉，Consumer端生成代理的流程总结如下：
- 1. spring加载时，解析Dubbo定义的命名空间，生成配置相关的对象；
- 2. consumer对应的直接配置为ReferenceConfig， reference的config加载完成后，分别使用ConsumerConfig、ApplicationConfig、ModuleConfig、RegistryConfig、MonitorConfig等的默认值来初始化ReferenceConfig，ReferenceConfig是FactoryBean，实际返回getObject方法返回的对象；
- 3. 获取注册中心配置，根据配置连接注册中心，并注册和订阅url变动提醒；
- 4. 根据URL的配置生成invoker，该对象是Dubbo中的可执行体，方法的调用实际都是通过他来实现；
- 5. 根据接口生成代理对象，创建时传入InvokerInvocationHandler，该handler封装了第4步生成的invoker，不管是`JavassistProxyFactory`还是`JdkProxyFactory`生成的代理对象，最终都是通过`InvokerInvocationHandler`调用`invoker.invoke`方法。
+ 1. spring加载时，解析Dubbo定义的命名空间，生成配置相关的对象；  
+ 2. consumer对应的直接配置为ReferenceConfig， reference的config加载完成后，分别使用ConsumerConfig、ApplicationConfig、ModuleConfig、RegistryConfig、MonitorConfig等的默认值来初始化ReferenceConfig，ReferenceConfig是FactoryBean，实际返回getObject方法返回的对象；  
+ 3. 获取注册中心配置，根据配置连接注册中心，并注册和订阅url变动提醒；  
+ 4. 根据URL的配置生成invoker，该对象是Dubbo中的可执行体，方法的调用实际都是通过他来实现；  
+ 5. 根据接口生成代理对象，创建时传入InvokerInvocationHandler，该handler封装了第4步生成的invoker，不管是`JavassistProxyFactory`还是`JdkProxyFactory`生成的代理对象，最终都是通过`InvokerInvocationHandler`调用`invoker.invoke`方法。  
  
 
 在整个初始化过程中，大量运用`SPI`机制，并通过URL总线生成并返回目标对象，加大对源码的分析难度，里面还有一些细节需要再找时间梳理。
