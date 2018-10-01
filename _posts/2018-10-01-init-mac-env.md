@@ -62,3 +62,37 @@ ssh -T git@github.com
 Warning: Permanently added the RSA host key for IP address '' to the list of known hosts.
 Hi xxx! You've successfully authenticated, but GitHub does not provide shell access.
 ```
+
+### 安装JDK
+
+通过如下命令安装最新的JDK：
+```java
+$ brew cask install java
+```
+
+安装成功提示：
+
+```java
+installer: Package name is JDK 11
+installer: Installing at base path /
+installer: The install was successful.
+🍺  java was successfully installed!
+```
+
+JDK11太新，线上用的是JDK8，所以我需要装JDK8:
+
+```java
+$ brew tap caskroom/versions
+$ brew cask install java8
+```
+
+### 配置Maven
+
+```java
+export M2_HOME="~/Documents/program_tools/maven-3.5.4"
+export M2=$M2_HOME/bin
+export MAVEN_OPTS="-Xms256m -Xmx512m"
+export PATH=$M2:$PATH
+```
+
+
