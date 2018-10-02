@@ -159,6 +159,10 @@ public E take() throws InterruptedException {
     }
 ```
 
+#### 实际应用
+
+`ScheduledThreadPoolExecutor`结合延迟队列实现任务定时执行，延迟队列的实现是`DelayedWorkQueue`。
+
 #### 参考资料
 1. http://www.10tiao.com/html/308/201511/400583280/1.html
 2. http://stackoverflow.com/questions/3058272/explain-leader-follower-pattern  
