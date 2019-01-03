@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Consumer端注册中心流程
+title: Dubbo Consumer端注册中心流程
 category: program
 ---
 
@@ -298,6 +298,7 @@ public void create(String path, boolean ephemeral) {
 
 ```java
 // 初始化
+// RegistryProtocol.java  
  RegistryDirectory<T> directory = new RegistryDirectory<T>(type, url);
  // 即为上文中的Registry
         directory.setRegistry(registry);
